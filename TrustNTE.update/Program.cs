@@ -37,6 +37,11 @@ namespace TrustNTE.Update
 
             Log("Updater 启动。参数：" + string.Join(" ", args));
 
+            // ★ 1. 无论有没有参数，先把漂亮的界面渲染出来！
+            var win = new UpdateWindow();
+            Application.Current.MainWindow = win;
+            win.Show();
+
             try
             {
                 var p = ParseArgs(args);
@@ -45,18 +50,16 @@ namespace TrustNTE.Update
                 ExpectedSha256 = p.Sha256;
                 SelectedUrl = GithubUrl ?? TencentUrl ?? "";
 
+                // ★ 2. 如果用户是双击打开的（没有参数）
                 if (string.IsNullOrWhiteSpace(SelectedUrl))
                 {
                     Log("未提供下载链接。");
-                    MessageBox.Show("未获取到有效的更新地址。", "更新错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Application.Current.Shutdown();
-                    return;
+                    win.UpdateStatus("未获取到有效的更新地址，请从主程序启动。", isError: true);
+                    win.ActionBtn.Content = "关 闭"; 
+                    return; // 这里只 return，不 Shutdown，窗口就留着了
                 }
 
-                var win = new UpdateWindow();
-                Application.Current.MainWindow = win;
-                win.Show();
-
+                // ★ 3. 下面的逻辑只有带参数进来才会执行
                 win.InitSources(GithubUrl, TencentUrl, (url) => SelectedUrl = url);
 
                 win.UpdateStatus("正在等待主程序退出...");
@@ -64,7 +67,6 @@ namespace TrustNTE.Update
 
                 if (string.IsNullOrWhiteSpace(TencentUrl))
                 {
-                    //        阻断编译错误：调用公开的 BeginUpdate
                     win.BeginUpdate();
                 }
                 else
@@ -75,14 +77,12 @@ namespace TrustNTE.Update
             catch (Exception ex)
             {
                 Log("初始化致命错误：" + ex);
-                MessageBox.Show($"初始化失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
+                win.UpdateStatus($"初始化失败：{ex.Message}", isError: true);
             }
         }
 
         public static async Task<bool> StartUpdateAsync(UpdateWindow win)
         {
-            //     提前声明 tempRoot，防止 catch 中无法清理
             string tempRoot = Path.Combine(AppContext.BaseDirectory, $"_update_{Guid.NewGuid():N}");
             try
             {
@@ -144,7 +144,6 @@ namespace TrustNTE.Update
             {
                 Log("更新失败：" + ex);
                 win.UpdateStatus($"更新失败：{ex.Message}", isError: true);
-                //        垃圾残留：失败时删除临时目录
                 try { if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, true); } catch { }
                 return false;
             }
@@ -176,7 +175,6 @@ namespace TrustNTE.Update
 
         private static async Task WaitMainExitedAsync(int? pid)
         {
-            //        超时丢失：加入 15 秒超时机制
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
             if (pid.HasValue)
             {

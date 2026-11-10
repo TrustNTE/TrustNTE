@@ -28,18 +28,36 @@ namespace TrustNTE.Services.Triggers
 
             /// <summary>是否需要开启了“自动传送”才执行</summary>
             public bool RequireTeleport { get; init; } = false;
+
+            /// <summary>自定义日志前缀，若为空则使用默认拼接</summary>
+            public string? CustomLogTag { get; init; }
+
+            /// <summary>对应的配置开关名，若为空则不检查</summary>
+            public string? ConfigToggleProperty { get; init; }
         }
 
         private static readonly StoryRule[] StoryRules =
         {
+            // ── 新增：今日不再提示 ──
+            new StoryRule { DisplayName = "剧情提示:今日不在提示", TemplateGroup = "Nte_PlotDoNotPromptToday", SearchRoi = new Rect(883, 534, 65, 46), Action = StoryActionType.Click, CustomLogTag = "剧情提示:今日不在提示", ConfigToggleProperty = "AutoPlotDoNotPromptEnabled" },
+
+            // ── 新增：签到可领取（7个区域，任意命中即可） ──
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1109, 620, 79, 39), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1291, 621, 70, 42), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1459, 623, 82, 38), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1111, 902, 77, 41), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1287, 899, 78, 41), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1466, 900, 77, 42), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+            new StoryRule { DisplayName = "环期赠礼→签到领取奖励", TemplateGroup = "Nte_CheckInClaimable", SearchRoi = new Rect(1674, 874, 119, 58), Action = StoryActionType.Click, CustomLogTag = "环期赠礼→签到领取奖励", ConfigToggleProperty = "AutoCheckInClaimEnabled" },
+
             // ── 传送模块（受界面开关控制） ──
             new StoryRule { DisplayName = "传送", TemplateGroup = "Nte_Teleport", SearchRoi = new Rect(1488, 940, 68, 44), Action = StoryActionType.Click, RequireTeleport = true },
             new StoryRule { DisplayName = "传送", TemplateGroup = "Nte_Teleport", SearchRoi = new Rect(1615, 937, 66, 45), Action = StoryActionType.Click, RequireTeleport = true },
 
-            // ── 新增：运通全城完成派送 ──
+            // ── 运通全城完成派送 ──
             new StoryRule { DisplayName = "运通全城完成派送", TemplateGroup = "Nte_YunTongCitywideDeliveryCompleted", SearchRoi = new Rect(1153, 873, 63, 43), Action = StoryActionType.Click },
 
-            // ── 新增：退出消息列表（End + Message 双模板 AND） ──
+            // ── 退出消息列表（End + Message 双模板 AND） ──
             new StoryRule
             {
                 DisplayName = "退出消息列表",
@@ -145,8 +163,15 @@ namespace TrustNTE.Services.Triggers
 
             foreach (var rule in StoryRules)
             {
-                // 【核心修改点】：如果这条规则受传送开关控制，且开关关闭，直接跳过
+                // 1. 检查传送开关
                 if (rule.RequireTeleport && !config.AutoTeleportEnabled) continue;
+
+                // 2. 检查新增的独立开关
+                if (!string.IsNullOrEmpty(rule.ConfigToggleProperty))
+                {
+                    var prop = typeof(Models.AppConfig).GetProperty(rule.ConfigToggleProperty);
+                    if (prop != null && prop.GetValue(config) is bool isEnabled && !isEnabled) continue;
+                }
 
                 Rect? hitRect = _storyTemplates.MatchAny(
                     resizedMat, rule.SearchRoi, rule.TemplateGroup, AutoStoryTemplateService.MatchThreshold);
@@ -166,7 +191,7 @@ namespace TrustNTE.Services.Triggers
                 _lastHitRect = hitRect.Value;
                 _lastHitGroup = rule.TemplateGroup;
                 _lastHitTime = DateTime.Now;
-                return;
+                return; // 一次只执行一个规则
             }
         }
 
@@ -209,11 +234,14 @@ namespace TrustNTE.Services.Triggers
                     }
             }
 
-            EmitStoryLog(head, action, config.AutoStoryLogMode);
+            EmitStoryLog(rule, head, action, config.AutoStoryLogMode);
         }
 
         private static string BuildRoiHead(StoryRule rule)
         {
+            // 如果设置了自定义日志头，直接返回
+            if (!string.IsNullOrEmpty(rule.CustomLogTag)) return rule.CustomLogTag;
+
             if (rule.SecondTemplateGroup == null || !rule.SecondSearchRoi.HasValue)
             {
                 return $"[自动剧情] {rule.DisplayName} {rule.TemplateGroup} 判断区域 " +
@@ -228,8 +256,16 @@ namespace TrustNTE.Services.Triggers
                    $"{b.X},{b.Y},{b.Right},{b.Bottom},宽高({b.Width},{b.Height})";
         }
 
-        private void EmitStoryLog(string head, string action, string logMode)
+        private void EmitStoryLog(StoryRule rule, string head, string action, string logMode)
         {
+            // 为了满足日志要求：【日志输出】[键鼠 前台还是后台→物理点击...]剧情提示:今日不在提示
+            if (!string.IsNullOrEmpty(rule.CustomLogTag))
+            {
+                // 驱动信息，例如 "→ 左键点击 (883, 534) [物理点击]"
+                _logService.LogInfo($"[自动剧情] {rule.CustomLogTag} {action}");
+                return;
+            }
+
             if (logMode == "双线输出")
             {
                 _logService.LogInfo(head);

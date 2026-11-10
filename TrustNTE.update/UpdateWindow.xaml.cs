@@ -30,9 +30,17 @@ namespace TrustNTE.Update
             System.Windows.Application.Current.Shutdown();
         }
 
-        private async void ActionBtn_Click(object sender, RoutedEventArgs e) => BeginUpdate();
+        private async void ActionBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // ★ 防呆：如果是没参数直接双击打开的，点击直接退出
+            if (ActionBtn.Content.ToString() == "关 闭")
+            {
+                System.Windows.Application.Current.Shutdown();
+                return;
+            }
+            BeginUpdate();
+        }
 
-        //     封装为公开行为，供 Program.cs 和事件处理器调用
         public async void BeginUpdate()
         {
             if (_isUpdating || _updateFailed) return;

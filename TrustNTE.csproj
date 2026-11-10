@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<!-- 把调试信息嵌入 exe，避免发布时产生一堆 .pdb -->
+		<!-- 把调试信息嵌入 exe-->
 		<DebugType>embedded</DebugType>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
@@ -12,6 +12,7 @@
 		<Platforms>x64</Platforms>
 		<PlatformTarget>x64</PlatformTarget>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<!-- 版本信息 -->
 		<Version>0.0.10</Version>
 		<NoWarn>$(NoWarn);CA1416;NU1605</NoWarn>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>

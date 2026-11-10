@@ -142,8 +142,10 @@ namespace TrustNTE.ViewModels
         private string BuildUpdaterArgs(string source)
         {
             string args = $"-I --source {source} --version {_remoteVersion}";
-            if (!string.IsNullOrWhiteSpace(_downloadUrl)) args += $" --url \"{_downloadUrl}\"";
-            if (!string.IsNullOrWhiteSpace(_sha256)) args += $" --sha256 {_sha256}";
+
+            if (!string.IsNullOrWhiteSpace(_downloadUrl)) args += $" --url=\"{_downloadUrl}\"";
+            if (!string.IsNullOrWhiteSpace(_sha256)) args += $" --sha256=\"{_sha256}\"";
+
             return args;
         }
     }

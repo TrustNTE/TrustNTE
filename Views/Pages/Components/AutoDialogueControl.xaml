@@ -19,6 +19,35 @@
         </ui:CardExpander.Header>
         <StackPanel>
             <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- 剧情今日不再提示 -->
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="自动点击「今日不再提示」" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="剧情中弹出该提示时自动点击关闭" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" IsChecked="{Binding Config.AutoPlotDoNotPromptEnabled}" VerticalAlignment="Center" />
+            </Grid>
+
+            <!--环期赠礼签到 -->
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="自动领取「环期赠礼签到」" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="识别到签到按钮时自动领取" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" IsChecked="{Binding Config.AutoCheckInClaimEnabled}" VerticalAlignment="Center" />
+            </Grid>
+
             <Grid Margin="16">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -28,7 +57,7 @@
                     <ui:TextBlock FontTypography="Body" Text="当识别到传送是否传送" />
                     <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="如果UI中是传送就识别并点击，不是就不识别 " />
                 </StackPanel>
-                <!-- ★ 这里已经修复为正确的单行标签 -->
+                <!-- 自动对话优先选择选项 -->
                 <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" IsChecked="{Binding Config.AutoTeleportEnabled}" VerticalAlignment="Center" />
             </Grid>
             <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
