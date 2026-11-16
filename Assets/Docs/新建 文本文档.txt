@@ -1,0 +1,24 @@
+把这个控制删掉
+换成 调试请集合日志方便查看  需要帮忙写代码点击对应AI对话即可API已告知
+下面框换成 
+💬deepseek
+💬Kimi
+💬GLM
+💬Gpt        点击跳转chatgpt.com
+💬claude  点击跳转claude.ai
+💬豆包       
+
+
+
+
+
+
+
+
+
+这是TrustNTE项目的Js沙箱的API接口
+项目仓库地址https://github.com/TrustNTE/TrustNTE
+你好好看看接来按照我的需求帮我写一下代码
+我会把此对话分享成链接
+有的人可能懂点代码有的人可能不懂代码
+你要告诉他要集合调度器一起使用是最佳的

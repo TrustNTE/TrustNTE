@@ -1,0 +1,153 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<!-- 把调试信息嵌入 exe-->
+		<DebugType>embedded</DebugType>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<Platforms>x64</Platforms>
+		<PlatformTarget>x64</PlatformTarget>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<!-- 版本信息 -->
+		<Version>0.0.09</Version>
+		<NoWarn>$(NoWarn);CA1416;NU1605</NoWarn>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ApplicationManifest>TrustNTE.manifest</ApplicationManifest>
+		<ApplicationIcon>Assets\titlelogo.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<!-- 排除不需要编译的子项目 -->
+	<ItemGroup>
+		<Compile Remove="TrustNTE.update\**\*.cs" />
+		<EmbeddedResource Remove="TrustNTE.update\**\*" />
+		<None Remove="TrustNTE.update\**\*" />
+		<Compile Remove="TrustNTE.Tests\**\*.cs" />
+		<EmbeddedResource Remove="TrustNTE.Tests\**\*" />
+		<None Remove="TrustNTE.Tests\**\*" />
+	</ItemGroup>
+
+	<!-- JS脚本资源文件 -->
+	<ItemGroup>
+		<None Include="UserData\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<!-- 外部资源拷贝（给 OpenCV 读取用） -->
+	<ItemGroup>
+		<None Update="Assets\NTE-CombatYOLO\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\Nte_Uid\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\Nte_login_screen\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\Nte_Launcher\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\Nte_Data\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Assets\NTE-Ocr_Models\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<!--用 None 替代 Content，防止单文件模式找图崩溃。现在虽然没用单文件，但这样写最稳 -->
+		<None Include="Views\Pages\TaskModules\Assets\**\*.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Views\Pages\TaskModules\Assets\*.bmp">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Include="Services\Triggers\Assets\*.bmp">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<None Update="Assets\Translations\*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+
+		<!-- 强制拷贝 Docs 和所有 Assets 里的外部文件（用 Content 保证绝对拷过去） -->
+		<None Remove="Assets\Docs\**\*.*" />
+		<Content Include="Assets\Docs\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Assets\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- 排除更新器文件夹，防止主项目编译时去解析更新器的 XAML -->
+		<Compile Remove="TrustNTE.update\**" />
+		<Page Remove="TrustNTE.update\**" />
+		<None Remove="TrustNTE.update\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\Psd\**\*.*" />
+	</ItemGroup>
+
+	<!-- UI 界面资源嵌入（确保 WPF 界面图标不丢失） -->
+	<ItemGroup>
+		<Resource Include="Assets\*.png" />
+		<Resource Include="Assets\*.jpg" />
+		<Resource Include="Assets\*.jpeg" />
+		<Resource Include="Assets\*.gif" />
+		<Resource Include="Assets\*.ico" />
+
+		<Resource Include="Views\**\*.png" />
+		<Resource Include="Views\**\*.jpg" />
+		<Resource Include="Views\**\*.jpeg" />
+		<Resource Include="Views\**\*.bmp" />
+		<Resource Include="Views\**\*.gif" />
+		<Resource Include="Views\**\*.ico" />
+
+		<Resource Include="Services\Triggers\Assets\*.bmp" />
+	</ItemGroup>
+
+	<!-- NuGet 包依赖 -->
+	<ItemGroup>
+		<PackageReference Include="SharpPcap" Version="6.3.1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+		<PackageReference Include="Markdig" Version="1.5.1" />
+		<PackageReference Include="MarkdView" Version="1.0.12" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.DirectML" Version="1.24.4" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
+		<PackageReference Include="MouseKeyHook" Version="5.7.1" />
+		<PackageReference Include="Microsoft.ClearScript.V8" Version="7.5.1.1" />
+		<PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.5.1.1" />
+		<PackageReference Include="OpenCvSharp4.runtime.win" Version="4.13.0.20260627" />
+		<PackageReference Include="OpenCvSharp4.Windows" Version="4.13.0.20260627" />
+		<PackageReference Include="OpenCvSharp4.Extensions" Version="4.13.0.20260627" />
+		<PackageReference Include="WPF-UI" Version="4.3.0" />
+		<PackageReference Include="WPF-UI.DependencyInjection" Version="4.3.0" />
+		<PackageReference Include="WPF-UI.Tray" Version="4.3.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+	</ItemGroup>
+
+	<!-- 抓包字典等 JSON 资源 -->
+	<ItemGroup>
+		<None Include="Assets\Maps\**\*.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<PublishSingleFile>false</PublishSingleFile>
+	</PropertyGroup>
+
+	<Target Name="BuildAndCopyUpdater" AfterTargets="Publish" Condition="Exists('$(MSBuildThisFileDirectory)TrustNTE.update\TrustNTE.update.csproj')">
+		<MSBuild Projects="$(MSBuildThisFileDirectory)TrustNTE.update\TrustNTE.update.csproj" Targets="Publish" Properties="Configuration=$(Configuration);Platform=x64;RuntimeIdentifier=win-x64;SelfContained=true;PublishSingleFile=true;EnableCompressionInSingleFile=true;PublishDir=$(MSBuildThisFileDirectory)TrustNTE.update\publish\" />
+		<ItemGroup>
+			<UpdaterFiles Include="$(MSBuildThisFileDirectory)TrustNTE.update\publish\**\*.*" Exclude="$(MSBuildThisFileDirectory)TrustNTE.update\publish\**\*.pdb" />
+		</ItemGroup>
+		<Copy SourceFiles="@(UpdaterFiles)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+	</Target>
+
+</Project>

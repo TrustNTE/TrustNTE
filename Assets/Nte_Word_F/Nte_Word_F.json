@@ -1,0 +1,57 @@
+{
+    "Nte_AutoPickup_Bubble": {
+        "x": 36,
+        "y": 61,
+        "w": 29,
+        "h": 27,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_AutoPickup_SmallHand": {
+        "x": 0,
+        "y": 28,
+        "w": 31,
+        "h": 27,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_AutoPickup_TreasureChest1": {
+        "x": 0,
+        "y": 60,
+        "w": 29,
+        "h": 28,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_Activate": {
+        "x": 0,
+        "y": 0,
+        "w": 40,
+        "h": 23,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_AutoPickup_TreasureChest2": {
+        "x": 36,
+        "y": 28,
+        "w": 29,
+        "h": 28,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    }
+}

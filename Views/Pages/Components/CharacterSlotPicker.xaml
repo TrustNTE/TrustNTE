@@ -1,0 +1,140 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Components.CharacterSlotPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <!-- 胶囊筛选 pill -->
+        <Style x:Key="Pill" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#E0E0E0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="bd" Background="#3A3A3A" CornerRadius="10" Padding="9,2" Margin="0,0,4,4">
+                            <ContentPresenter VerticalAlignment="Center" TextBlock.FontSize="12"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- 悬停效果 -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#4A4A4A"/>
+                            </Trigger>
+                            <!-- 选中效果（后写的覆盖悬停） -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#00E5C0"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <!-- ★ 修复：增加 HorizontalAlignment 和 HorizontalContentAlignment 保证填满 1/4 列宽 -->
+        <ToggleButton x:Name="SlotToggle" Click="SlotToggle_Click" Height="30" Cursor="Hand"
+                      HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+            <ToggleButton.Template>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="bd" Background="#1A1A1A" BorderBrush="#3F3F3F" BorderThickness="1"
+                            CornerRadius="4" Padding="8,4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" FontSize="13" TextTrimming="CharacterEllipsis">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{Binding SelectedCharacter, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedCharacter, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="">
+                                                <Setter Property="Text" Value="None"/>
+                                                <Setter Property="Foreground" Value="#888888"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" Text=" ▼" FontSize="10" VerticalAlignment="Center" Foreground="#888888"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#00E5C0"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="bd" Property="BorderBrush" Value="#00E5C0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </ToggleButton.Template>
+        </ToggleButton>
+
+        <!-- 弹出选择面板 -->
+        <Popup x:Name="SlotPopup" PlacementTarget="{Binding ElementName=SlotToggle}" Placement="Bottom"
+               StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade"
+               Opened="SlotPopup_Opened" Closed="SlotPopup_Closed">
+            <Border Background="#2A2A2A" BorderBrush="#3F3F3F" BorderThickness="1" CornerRadius="6" Width="270">
+                <StackPanel>
+                    <TextBox x:Name="SearchBox" Margin="8,8,8,4" Height="28" VerticalContentAlignment="Center"
+                             TextChanged="Search_Changed"/>
+
+                    <!-- 稀有度筛选 -->
+                    <WrapPanel Margin="8,2">
+                        <RadioButton Content="全部"  Tag="全部"  GroupName="R" Style="{StaticResource Pill}" IsChecked="True" Checked="Rarity_Checked"/>
+                        <RadioButton Content="限定S" Tag="限定S" GroupName="R" Style="{StaticResource Pill}" Checked="Rarity_Checked"/>
+                        <RadioButton Content="常驻S" Tag="常驻S" GroupName="R" Style="{StaticResource Pill}" Checked="Rarity_Checked"/>
+                        <RadioButton Content="四星A" Tag="四星A" GroupName="R" Style="{StaticResource Pill}" Checked="Rarity_Checked"/>
+                    </WrapPanel>
+
+                    <!-- 属性筛选 -->
+                    <WrapPanel Margin="8,0,8,4">
+                        <RadioButton Content="全部" Tag="全部" GroupName="E" Style="{StaticResource Pill}" IsChecked="True" Checked="Element_Checked"/>
+                        <RadioButton Content="灵" Tag="灵" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                        <RadioButton Content="咒" Tag="咒" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                        <RadioButton Content="光" Tag="光" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                        <RadioButton Content="暗" Tag="暗" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                        <RadioButton Content="相" Tag="相" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                        <RadioButton Content="魂" Tag="魂" GroupName="E" Style="{StaticResource Pill}" Checked="Element_Checked"/>
+                    </WrapPanel>
+
+                    <!-- 角色列表 -->
+                    <ListBox x:Name="CharList" Height="250" BorderThickness="0" Background="Transparent"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="Row_Click"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="10,5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding DisplayName}" FontSize="13" Foreground="#E0E0E0"/>
+                                    <TextBlock Grid.Column="1" FontSize="11" Foreground="#888888" Margin="12,0,0,0" Text="{Binding MetaText}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding MetaText}" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>
