@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Dps.DpsLiveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:TrustNTE.Views.Pages.Dps"
+             xmlns:p="clr-namespace:TrustNTE.Views.Pages">
+    <!-- 采集中容器:零样式只管布局。底部并排:深渊(左340) | 时间线(右占余宽) -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <v:DpsLiveTopBarView Grid.Row="0"/>
+        <v:DpsKpiBarView Grid.Row="1"/>
+        <p:DpsBattleListsView Grid.Row="2"/>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="340"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <v:DpsAbyssFooterView Grid.Column="0" Margin="24,0,10,10"/>
+            <v:DpsTimelineView Grid.Column="1"/>
+        </Grid>
+
+        <v:DpsQualityView Grid.Row="4"/>
+    </Grid>
+</UserControl>

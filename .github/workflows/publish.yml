@@ -1,0 +1,56 @@
+name: publish
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 编译发布版
+        run: dotnet publish TrustNTE.csproj -c Release -r win-x64 --self-contained false -p:Platform=x64 -p:Version=${{ github.ref_name }} -o publish -v detailed
+
+      - name: 打包 zip
+        run: Compress-Archive -Path publish/* -DestinationPath TrustNTE_${{ github.ref_name }}.zip
+
+      - name: 安装 Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: 编译安装包
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ github.ref_name }} setup.iss
+          Rename-Item "installer/TrustNTE-setup.exe" "Installer.${{ github.ref_name }}.exe"
+
+      - name: 创建 Release 并上传
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            TrustNTE_${{ github.ref_name }}.zip
+            Installer.${{ github.ref_name }}.exe
+
+  mirror-to-cnb:
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 同步 Release 到 CNB
+        env:
+          CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+        run: |
+          pip install -r .github/workflows/requirements.txt
+          python .github/workflows/sync_release_to_cnb.py --cnb-token $CNB_TOKEN

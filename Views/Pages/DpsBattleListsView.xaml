@@ -1,0 +1,152 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.DpsBattleListsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="DpsAnalysisPageResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="24,0,24,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 角色榜:独占一卡,内部滚动 -->
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource SecTitle}">
+                    <Run Foreground="#E8E8F0">伤害输出</Run><Run Foreground="#00F0FF"> CHARACTERS</Run><Run> · 点击行看详情</Run>
+                </TextBlock>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Characters}" ItemTemplate="{StaticResource CharRowTpl}"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- 右列:技能(弹性) + 时间线(紧凑) -->
+        <Grid Grid.Column="1" Margin="8,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource Card}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource SecTitle}">
+                        <Run Foreground="#E8E8F0">技能统计</Run><Run Foreground="#00F0FF"> SKILLS</Run><Run> · FU = 追击伤害</Run>
+                    </TextBlock>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding Skills}" ItemTemplate="{StaticResource SkillRowTpl}"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- 时间线 · 紧凑版(柱状/曲线/圆环 三模式) -->
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,10,0,0" Padding="12,8">
+                <StackPanel>
+                    <Grid Margin="0,0,0,6">
+                        <TextBlock Style="{StaticResource SecTitle}" VerticalAlignment="Center" Margin="0">
+                            <Run Foreground="#E8E8F0">DPS 时间线</Run><Run Foreground="#00F0FF"> TIMELINE</Run>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <RadioButton GroupName="tlm" IsChecked="{Binding IsBarMode}"   Content="▮" Style="{StaticResource NeoRadio}" Margin="0,0,4,0"/>
+                            <RadioButton GroupName="tlm" IsChecked="{Binding IsLineMode}"  Content="〰" Style="{StaticResource NeoRadio}" Margin="0,0,4,0"/>
+                            <RadioButton GroupName="tlm" IsChecked="{Binding IsDonutMode}" Content="◕" Style="{StaticResource NeoRadio}"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Height="150" Background="#0D0D18" CornerRadius="3" ClipToBounds="True">
+                        <Grid>
+                            <!-- 柱状:右对齐,新桶推旧桶 -->
+                            <ItemsControl ItemsSource="{Binding TimelineBars}" ItemTemplate="{StaticResource BucketTpl}"
+                                          Margin="4,0,4,0" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                <ItemsControl.Style>
+                                    <Style TargetType="ItemsControl">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsBarMode}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ItemsControl.Style>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <!-- 曲线 -->
+                            <Grid Margin="4">
+                                <Grid.Style>
+                                    <Style TargetType="Grid">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsLineMode}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <Polygon Points="{Binding AreaPoints}" Fill="#3300F0FF" Stretch="Fill"/>
+                                <Polyline Points="{Binding LinePoints}" Stroke="#00F0FF" StrokeThickness="2" StrokeLineJoin="Round" Stretch="Fill"/>
+                            </Grid>
+                            <!-- 圆环:220 坐标系,Viewbox 缩到 140 -->
+                            <Viewbox Width="140" Height="140" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox.Style>
+                                    <Style TargetType="Viewbox">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDonutMode}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Viewbox.Style>
+                                <Grid Width="220" Height="220">
+                                    <ItemsControl ItemsSource="{Binding DonutSlices}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Grid/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Path Data="{Binding Geometry}" Fill="{Binding FillBrush}" Stroke="#0A0A12"
+                                                      StrokeThickness="2" ToolTip="{Binding Label}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="团队 DPS" FontSize="10" Foreground="#8A8AA0" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding TeamDpsStr}" FontSize="18" FontWeight="Bold" Foreground="#00F0FF"
+                                                   HorizontalAlignment="Center" FontFamily="Cascadia Mono, Consolas" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <Rectangle Width="12" Height="3" Fill="#00F0FF" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="DPS" FontSize="9" Foreground="#8A8AA0" Margin="0,0,10,0"/>
+                        <Rectangle Width="12" Height="3" Fill="#3A3F4C" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="时停" FontSize="9" Foreground="#8A8AA0" Margin="0,0,10,0"/>
+                        <Rectangle Width="12" Height="3" Fill="#FF00E5" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                        <TextBlock Text="换半/通关" FontSize="9" Foreground="#8A8AA0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

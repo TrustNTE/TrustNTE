@@ -1,0 +1,125 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Components.AutoLootControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers">
+
+    <ui:CardExpander Margin="0,0,0,12" ContentPadding="0" Icon="{ui:SymbolIcon HandLeft24}" IsExpanded="False">
+        <ui:CardExpander.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '自动拾取'}" />
+                    <TextBlock FontSize="12" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}">
+                        <Run Text="{helpers:Trans '识别到可交互物品时，自动按下'}" />
+                        <Run Text="{Binding Config.AutoLootKey, Mode=OneWay}" Foreground="{ui:ThemeResource AccentTextFillColorPrimaryBrush}" FontWeight="Bold"/>
+                        <Run Text="{helpers:Trans ' 拾取/交互'}" />
+                    </TextBlock>
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,24,0" IsChecked="{Binding Config.AutoLootEnabled}" VerticalAlignment="Center" />
+            </Grid>
+        </ui:CardExpander.Header>
+
+        <StackPanel>
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- ★ 恢复识别引擎下拉框 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '识别引擎'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                  Text="{helpers:Trans '模板：极速（零配置）；OCR：大世界全覆盖（需名单）'}" />
+                </StackPanel>
+                <ComboBox x:Name="EngineCombo" Grid.Column="1" Width="150" Margin="0,0,36,0"
+                          ItemsSource="{Binding LootEngines}"
+                          SelectedItem="{Binding Config.AutoLootEngine}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource TransValueConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
+
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- ★ 黑白名单（仅 OCR 引擎显示） -->
+            <Grid Margin="16">
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedItem, ElementName=EngineCombo}" Value="OCR">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '黑白名单'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                  Text="{helpers:Trans '白名单模式：只拾名单内的物品；黑名单模式：名单内的不拾'}" />
+                </StackPanel>
+                <ComboBox Grid.Column="1" Width="130" Margin="0,0,16,0"
+                          ItemsSource="{Binding ListModes}"
+                          SelectedItem="{Binding Config.AutoLootListMode}" VerticalAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource TransValueConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ui:Button Grid.Column="2" Content="{helpers:Trans '配置名单'}" Margin="0,0,36,0"
+                           Command="{Binding OpenListConfigCommand}" />
+            </Grid>
+
+            <!-- ★ 动态隐藏的 Separator -->
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0">
+                <Separator.Style>
+                    <Style TargetType="Separator">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedItem, ElementName=EngineCombo}" Value="OCR">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Separator.Style>
+            </Separator>
+
+            <!-- 自定义拾取按键 + 连按次数/间隔 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '自定义拾取按键'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                  Text="{helpers:Trans '默认为 F，需更改成其他键的请阅读文档'}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <ui:TextBox Width="100" Margin="0,0,24,0"
+                                Text="{Binding Config.AutoLootKey, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Text="{helpers:Trans '识别到物品按几次'}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <ui:NumberBox Value="{Binding Config.AutoLootFPressCount}" Minimum="1" Maximum="10" MaxDecimalPlaces="0" Width="90" SpinButtonPlacementMode="Compact" Margin="0,0,24,0" ToolTip="{helpers:Trans '物品密集时可调大，一次窗口期连按清掉一片'}" />
+                    <TextBlock Text="{helpers:Trans '间隔（毫秒）'}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <ui:NumberBox Value="{Binding Config.AutoLootFPressIntervalMs}" Minimum="100" Maximum="2000" MaxDecimalPlaces="0" Width="110" SpinButtonPlacementMode="Compact" Margin="0,0,36,0" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </ui:CardExpander>
+</UserControl>

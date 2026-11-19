@@ -1,0 +1,479 @@
+[
+    {
+        "id":  "fork_yuren",
+        "name":  "勿忘伞",
+        "name_en":  "Umbrella",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_yuren_256.png"
+    },
+    {
+        "id":  "fork_bopu",
+        "name":  "光波眩晕，迷走狂欢",
+        "name_en":  "Cosmos Daze, Wild Reverie",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_bopu_256.png"
+    },
+    {
+        "id":  "fork_mofeikesi",
+        "name":  "好狗狗走四方",
+        "name_en":  "Good Boy\u0027s Grand Adventure",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_mofeikesi_256.png"
+    },
+    {
+        "id":  "fork_jiaojuan",
+        "name":  "闪耀的每一天",
+        "name_en":  "Shiny Days",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_jiaojuan_256.png"
+    },
+    {
+        "id":  "fork_wuhuakuang",
+        "name":  "被遗忘者",
+        "name_en":  "The Forgotten",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_wuhuakuang_256.png"
+    },
+    {
+        "id":  "fork_jingmotingyuan",
+        "name":  "茶花会",
+        "name_en":  "Camellia Society",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_jingmotingyuan_256.png"
+    },
+    {
+        "id":  "fork_oulaquantao",
+        "name":  "欧拉欧拉！",
+        "name_en":  "Oraora!",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_oulaquantao_256.png"
+    },
+    {
+        "id":  "fork_lingganzhongjiezhe",
+        "name":  "灵感大逃杀",
+        "name_en":  "Mind Royale",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_lingganzhongjiezhe_256.png"
+    },
+    {
+        "id":  "fork_rishi",
+        "name":  "休息日",
+        "name_en":  "Day Off",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_rishi_256.png"
+    },
+    {
+        "id":  "fork_dustbin",
+        "name":  "危险游戏",
+        "name_en":  "Dangerous Game",
+        "quality":  "BLUE",
+        "rarity":  "B",
+        "exclusive":  "",
+        "icon256":  "256/fork_dustbin_256.png"
+    },
+    {
+        "id":  "fork_nonos",
+        "name":  "成功的第一步",
+        "name_en":  "First Step to Success",
+        "quality":  "BLUE",
+        "rarity":  "B",
+        "exclusive":  "",
+        "icon256":  "256/fork_nonos_256.png"
+    },
+    {
+        "id":  "fork_vine",
+        "name":  "笑口常开",
+        "name_en":  "Be Happy",
+        "quality":  "BLUE",
+        "rarity":  "B",
+        "exclusive":  "",
+        "icon256":  "256/fork_vine_256.png"
+    },
+    {
+        "id":  "fork_Prokaryon",
+        "name":  "「我们。」",
+        "name_en":  "Us.",
+        "quality":  "BLUE",
+        "rarity":  "B",
+        "exclusive":  "",
+        "icon256":  "256/fork_prokaryon_256.png"
+    },
+    {
+        "id":  "fork_BitterCake",
+        "name":  "良药苦口",
+        "name_en":  "The Good, The Bad, The Bitter",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_bittercake_256.png"
+    },
+    {
+        "id":  "fork_appliance",
+        "name":  "「电音」狂欢",
+        "name_en":  "\"Real Music\"",
+        "quality":  "BLUE",
+        "rarity":  "B",
+        "exclusive":  "",
+        "icon256":  "256/fork_appliance_256.png"
+    },
+    {
+        "id":  "fork_TigerTally",
+        "name":  "预备备",
+        "name_en":  "Ready-Ready",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1010",
+        "icon256":  "256/fork_tigertally_256.png"
+    },
+    {
+        "id":  "fork_BitGame",
+        "name":  "引爆全场",
+        "name_en":  "Blow up the Crowd",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_bitgame_256.png"
+    },
+    {
+        "id":  "fork_BlackBook",
+        "name":  "漆黑青春妄想",
+        "name_en":  "Youthful Fantasy",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_blackbook_256.png"
+    },
+    {
+        "id":  "fork_mamen",
+        "name":  "思考喵",
+        "name_en":  "Contemplative Cat",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_mamen_256.png"
+    },
+    {
+        "id":  "fork_Nakupeda",
+        "name":  "千金难买你开心",
+        "name_en":  "Your Happiness is Priceless",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_nakupeda_256.png"
+    },
+    {
+        "id":  "fork_wushoutieyu",
+        "name":  "焰魂狂飙",
+        "name_en":  "Raging Flames",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_wushoutieyu_256.png"
+    },
+    {
+        "id":  "fork_Arachne",
+        "name":  "永恒圆舞曲",
+        "name_en":  "Eternal Waltz",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_arachne_256.png"
+    },
+    {
+        "id":  "fork_PoliceRat",
+        "name":  "海特洛的安宁",
+        "name_en":  "Hethereau\u0027s Keeper",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_policerat_256.png"
+    },
+    {
+        "id":  "fork_tuansanlang",
+        "name":  "该死的邂逅",
+        "name_en":  "The Great Thief",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_tuansanlang_256.png"
+    },
+    {
+        "id":  "fork_Kite",
+        "name":  "当心头顶",
+        "name_en":  "Watch Your Heads!",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_kite_256.png"
+    },
+    {
+        "id":  "fork_PaperPlane",
+        "name":  "开始净空",
+        "name_en":  "Clear Skies",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_paperplane_256.png"
+    },
+    {
+        "id":  "fork_spider",
+        "name":  "挂你在心口难开",
+        "name_en":  "Failing You, Heavy in My Heart",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_spider_256.png"
+    },
+    {
+        "id":  "fork_yaodao",
+        "name":  "拔刀",
+        "name_en":  "Drawn Blade",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_yaodao_256.png"
+    },
+    {
+        "id":  "fork_koinobori",
+        "name":  "终有时",
+        "name_en":  "A Time Will Come",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_koinobori_256.png"
+    },
+    {
+        "id":  "fork_snowman",
+        "name":  "愚者种春",
+        "name_en":  "The Fools\u0027 Spring",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_snowman_256.png"
+    },
+    {
+        "id":  "fork_BoxingCandy",
+        "name":  "不屈之绵",
+        "name_en":  "Fluff of Fortitude",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_boxingcandy_256.png"
+    },
+    {
+        "id":  "fork_KnightCandy",
+        "name":  "凶猛之绵",
+        "name_en":  "Fluff of Ferocity",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_knightcandy_256.png"
+    },
+    {
+        "id":  "fork_ThiefCandy",
+        "name":  "灵敏之绵",
+        "name_en":  "Fluff of Finesse",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_thiefcandy_256.png"
+    },
+    {
+        "id":  "fork_MotorCandy",
+        "name":  "极速之绵",
+        "name_en":  "Fluff of Fleetness",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_motorcandy_256.png"
+    },
+    {
+        "id":  "fork_BlastCandy",
+        "name":  "无畏之绵",
+        "name_en":  "Fluff of Fearlessness",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_blastcandy_256.png"
+    },
+    {
+        "id":  "fork_Crowbar",
+        "name":  "时间大盗",
+        "name_en":  "Time Bandit",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_crowbar_256.png"
+    },
+    {
+        "id":  "fork_Castle",
+        "name":  "扭曲之城的呼唤",
+        "name_en":  "Call of the Twisted City",
+        "quality":  "PURPLE",
+        "rarity":  "A",
+        "exclusive":  "",
+        "icon256":  "256/fork_castle_256.png"
+    },
+    {
+        "id":  "fork_Butterfly",
+        "name":  "现实避难所",
+        "name_en":  "Reality Refuge",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_butterfly_256.png"
+    },
+    {
+        "id":  "fork_NestBird",
+        "name":  "面具下的泪",
+        "name_en":  "Tears Beneath the Mask",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_nestbird_256.png"
+    },
+    {
+        "id":  "fork_Whale",
+        "name":  "鲸之歌",
+        "name_en":  "Song of the Whale",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_whale_256.png"
+    },
+    {
+        "id":  "fork_Time",
+        "name":  "行进于时间之外",
+        "name_en":  "Marching Beyond Time",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1052",
+        "icon256":  "256/fork_time_256.png"
+    },
+    {
+        "id":  "fork_Rose",
+        "name":  "「最后一朵玫瑰」",
+        "name_en":  "The Last Rose",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1004",
+        "icon256":  "256/fork_rose_256.png"
+    },
+    {
+        "id":  "fork_worldrain",
+        "name":  "「倾世之雨」",
+        "name_en":  "The Rain That Shook the World",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1051,1046",
+        "icon256":  "256/fork_worldrain_256.png"
+    },
+    {
+        "id":  "fork_moon",
+        "name":  "「银河暂留」",
+        "name_en":  "Stellar Veil",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "",
+        "icon256":  "256/fork_moon_256.png"
+    },
+    {
+        "id":  "fork_GoldWool",
+        "name":  "众人追寻之物",
+        "name_en":  "What\u0027s Desired",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1071",
+        "icon256":  "256/fork_goldwool_256.png"
+    },
+    {
+        "id":  "fork_LunarPhase",
+        "name":  "穿过胭红蜃景",
+        "name_en":  "Blushing Mirage",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1076",
+        "icon256":  "256/fork_lunarphase_256.png"
+    },
+    {
+        "id":  "fork_Door",
+        "name":  "错误的门",
+        "name_en":  "The Wrong Gate",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1075",
+        "icon256":  "256/fork_door_256.png"
+    },
+    {
+        "id":  "fork_DemonBlade",
+        "name":  "噬心诡刃",
+        "name_en":  "Ravenous Blade",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1036",
+        "icon256":  "256/fork_demonblade_256.png"
+    },
+    {
+        "id":  "fork_GoldRecord",
+        "name":  "远行者之声",
+        "name_en":  "Voice of the Voyager",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1072",
+        "icon256":  "256/fork_goldrecord_256.png"
+    },
+    {
+        "id":  "fork_twinbirds",
+        "name":  "罪与罚",
+        "name_en":  "Crime and Punishment",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1042",
+        "icon256":  "256/fork_twinbirds_256.png"
+    },
+    {
+        "id":  "fork_prism",
+        "name":  "月的对跖点",
+        "name_en":  "Far Side of the Moon",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1057",
+        "icon256":  "256/fork_prism_256.png"
+    },
+    {
+        "id":  "fork_elyms",
+        "name":  "静候彩铃",
+        "name_en":  "Echoes on Hold",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1090",
+        "icon256":  "256/fork_elyms_256.png"
+    },
+    {
+        "id":  "fork_exe",
+        "name":  "虚线彼方",
+        "name_en":  "Dotted Horizon",
+        "quality":  "ORANGE",
+        "rarity":  "S",
+        "exclusive":  "1074",
+        "icon256":  "256/fork_exe_256.png"
+    }
+]

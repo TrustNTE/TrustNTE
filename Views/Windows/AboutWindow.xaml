@@ -1,0 +1,67 @@
+﻿<ui:FluentWindow x:Class="TrustNTE.Views.Windows.AboutWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Title="关于 TrustNTE"
+                 Width="560"
+                 Height="380"
+                 ResizeMode="NoResize"
+                 WindowStartupLocation="CenterOwner"
+                 WindowBackdropType="Mica"
+                 ExtendsContentIntoTitleBar="True"
+                 Background="{ui:ThemeResource ApplicationBackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0"
+                     Title="关于 TrustNTE"
+                     ShowMaximize="False"
+                     ShowMinimize="False"/>
+
+        <StackPanel Grid.Row="1" Margin="28,16,28,10">
+            <ui:TextBlock Text="TrustNTE"
+                          FontTypography="Title"
+                          Margin="0,0,0,16"/>
+
+            <ui:TextBlock Text="版本：V0.0.11"
+                          Margin="0,0,0,12"/>
+
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,12">
+                <Run Text="项目地址："/>
+                <Hyperlink NavigateUri="https://github.com/TrustNTE/TrustNTE"
+                           RequestNavigate="Hyperlink_OnRequestNavigate">
+                    https://github.com/TrustNTE/TrustNTE
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,12">
+                <Run Text="教程地址："/>
+                <Hyperlink NavigateUri="https://www.bilibili.com/video/BV13wsK6YEzo/"
+                           RequestNavigate="Hyperlink_OnRequestNavigate">
+                    https://www.bilibili.com/video/BV13wsK6YEzo/
+                </Hyperlink>
+            </TextBlock>
+
+            <ui:TextBlock Text="开源协议：MIT License"
+                          Margin="0,0,0,12"/>
+
+            <TextBlock TextWrapping="Wrap">
+                <Run Text="帮助文档："/>
+                <Hyperlink NavigateUri="https://www.bilibili.com/video/BV13wsK6YEzo/"
+                           RequestNavigate="Hyperlink_OnRequestNavigate">
+                    https://www.bilibili.com/video/BV13wsK6YEzo/
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <ui:Button Grid.Row="2"
+                   Content="确定"
+                   Margin="28,10,28,24"
+                   Click="CloseButton_OnClick"/>
+    </Grid>
+</ui:FluentWindow>

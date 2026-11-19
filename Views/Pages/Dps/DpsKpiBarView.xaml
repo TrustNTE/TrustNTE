@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Dps.DpsKpiBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="DpsShared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UniformGrid Rows="1" Columns="6" Margin="24,0,24,10">
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '总伤害 TOTAL DMG'}"/>
+                <TextBlock Text="{Binding TotalDamageStr}" Style="{StaticResource KpiNum}" Foreground="#FFE600"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '团队 DPS'}"/>
+                <TextBlock Text="{Binding TeamDpsStr}" Style="{StaticResource KpiNum}" Foreground="#00F0FF"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '战斗时长'}"/>
+                <TextBlock Text="{Binding DurationStr}" Style="{StaticResource KpiNum}" Foreground="#00FF9C"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '承受伤害'}"/>
+                <TextBlock Text="{Binding DamageTakenStr}" Style="{StaticResource KpiNum}" Foreground="#FF00E5"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '命中数 HITS'}"/>
+                <TextBlock Text="{Binding HitsStr}" Style="{StaticResource KpiNum}" Foreground="#00F0FF"/>
+            </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '削减最大生命 MAX HP REDUCTION'}"/>
+                <TextBlock Text="{Binding MaxHpReductionStr}" Style="{StaticResource KpiNum}" Foreground="#FFE600"/>
+            </StackPanel>
+        </Border>
+    </UniformGrid>
+</UserControl>

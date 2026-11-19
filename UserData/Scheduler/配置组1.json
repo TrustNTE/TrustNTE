@@ -1,0 +1,22 @@
+{
+  "Schema": 1,
+  "Name": "配置组1",
+  "Tasks": [
+    {
+      "Name": "玩家血条 OCR",
+      "Type": "JsScript",
+      "Target": "玩家血条 OCR.js",
+      "RunNum": 1,
+      "Enabled": true,
+      "TimeoutSeconds": 0
+    },
+    {
+      "Name": "BossFight",
+      "Type": "JsScript",
+      "Target": "BossFight.js",
+      "RunNum": 1,
+      "Enabled": true,
+      "TimeoutSeconds": 0
+    }
+  ]
+}

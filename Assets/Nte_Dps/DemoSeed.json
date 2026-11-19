@@ -1,0 +1,36 @@
+{
+  "_说明": "演示模式种子数据(核心缺失时的降级假数据);新增/修改角色与技能直接编辑本文件,不改代码。id=角色ID(头像仍按 AvatarDataTable.json 解析),value=演示初始伤害。",
+  "characters": [
+    { "id": 1071, "name": "卡厄斯", "attribute": "相", "value": 8842310.0 },
+    { "id": 1010, "name": "娜娜莉", "attribute": "灵", "value": 4848130.0 },
+    { "id": 1076, "name": {
+  "_说明": "演示模式种子数据(核心缺失时的降级假数据);新增/修改角色与技能直接编辑本文件,不改代码。id=角色ID(头像仍按 AvatarDataTable.json 解析),value=演示初始伤害。",
+  "characters": [
+    { "id": 1071, "name": "卡厄斯", "attribute": "相", "value": 8842310.0 },
+    { "id": 1010, "name": "娜娜莉", "attribute": "灵", "value": 4848130.0 },
+    { "id": 1076, "name": "真红",   "attribute": "光", "value": 3049630.0 },
+    { "id": 1004, "name": "安魂曲", "attribute": "暗", "value": 1915790.0 }
+  ],
+  "skills": [
+    { "char": "卡厄斯", "skill": "湮灭回响", "attribute": "相", "followUp": false, "value": 6333850.0 },
+    { "char": "卡厄斯", "skill": "终焉序列", "attribute": "相", "followUp": true,  "value": 2502260.0 },
+    { "char": "娜娜莉", "skill": "潮汐裂斩", "attribute": "灵", "followUp": false, "value": 2189480.0 },
+    { "char": "真红",   "skill": "炽阳宣告", "attribute": "光", "followUp": false, "value": 1876700.0 },
+    { "char": "娜娜莉", "skill": "深海回涌", "attribute": "灵", "followUp": true,  "value": 1642110.0 },
+    { "char": "安魂曲", "skill": "安魂礼拜", "attribute": "暗", "followUp": false, "value": 1212030.0 },
+    { "char": "真红",   "skill": "裁决之炎", "attribute": "光", "followUp": true,  "value": 860150.0 }
+  ]
+}
+"真红",   "attribute": "光", "value": 3049630.0 },
+    { "id": 1004, "name": "安魂曲", "attribute": "暗", "value": 1915790.0 }
+  ],
+  "skills": [
+    { "char": "卡厄斯", "skill": "湮灭回响", "attribute": "相", "followUp": false, "value": 6333850.0 },
+    { "char": "卡厄斯", "skill": "终焉序列", "attribute": "相", "followUp": true,  "value": 2502260.0 },
+    { "char": "娜娜莉", "skill": "潮汐裂斩", "attribute": "灵", "followUp": false, "value": 2189480.0 },
+    { "char": "真红",   "skill": "炽阳宣告", "attribute": "光", "followUp": false, "value": 1876700.0 },
+    { "char": "娜娜莉", "skill": "深海回涌", "attribute": "灵", "followUp": true,  "value": 1642110.0 },
+    { "char": "安魂曲", "skill": "安魂礼拜", "attribute": "暗", "followUp": false, "value": 1212030.0 },
+    { "char": "真红",   "skill": "裁决之炎", "attribute": "光", "followUp": true,  "value": 860150.0 }
+  ]
+}
