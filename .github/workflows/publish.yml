@@ -21,7 +21,7 @@ jobs:
         run: |
           $v = "${{ github.ref_name }}".TrimStart('v')
           echo "使用版本号: $v"
-          dotnet restore TrustNTE.update\TrustNTE.update.csproj -c Release -r win-x64 -p:SelfContained=true
+          dotnet restore TrustNTE.update\TrustNTE.update.csproj -p:Configuration=Release -p:RuntimeIdentifiers=win-x64 -p:SelfContained=true
           dotnet publish TrustNTE.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:Version=$v -o publish
 
       - name: 打包 zip
