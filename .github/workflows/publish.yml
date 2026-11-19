@@ -32,7 +32,7 @@ jobs:
 
       - name: 编译安装包
         run: |
-          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ github.ref_name }} setup.iss
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ github.ref_name }} /DMyAppVersion=${{ github.ref_name }} setup.iss
           Rename-Item "installer/TrustNTE-setup.exe" "Installer.${{ github.ref_name }}.exe"
 
       - name: 创建 Release 并上传
