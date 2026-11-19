@@ -14,10 +14,10 @@ jobs:
 
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: 编译发布版
-        run: dotnet publish TrustNTE.csproj -c Release -r win-x64 --self-contained false -p:Platform=x64 -p:Version=${{ github.ref_name }} -o publish -v detailed
+        run: dotnet publish TrustNTE.csproj -c Release -r win-x64 --self-contained false -p:Version=${{ github.ref_name }} -o publish -v detailed
 
       - name: 打包 zip
         run: Compress-Archive -Path publish/* -DestinationPath TrustNTE_${{ github.ref_name }}.zip
