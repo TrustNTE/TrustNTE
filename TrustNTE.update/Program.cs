@@ -1,0 +1,373 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using Application = System.Windows.Application;
+
+namespace TrustNTE.Update
+{
+    class Program
+    {
+        // ★修改① TrustNTE.update.exe 已移出跳过名单：更新包里的新版更新器会随包装入（自我更新）
+        private static readonly string[] SkipFileNames =
+        {
+            "config.json",
+            "TrustNTE.update.dll",
+            "TrustNTE.update.deps.json",
+            "TrustNTE.update.runtimeconfig.json",
+            "TrustNTE.update.pdb"
+        };
+
+        private static readonly string[] SkipDirNames = { "Logs", "log" };
+
+        private const string UpdaterExeName = "TrustNTE.update.exe";
+        private const string UpdaterOldName = "TrustNTE.update.old.exe";
+
+        private static Mutex? _mutex;
+
+        public static void ReleaseMutex() => _mutex?.Dispose();
+
+        public static string? GithubUrl { get; private set; }
+        public static string? TencentUrl { get; private set; }
+        public static string? ExpectedSha256 { get; private set; }
+        public static string SelectedUrl { get; set; } = "";
+
+        public static async Task Start(string[] args)
+        {
+            _mutex = new Mutex(true, @"Local\TrustNTE_Update_Lock", out bool createdNew);
+            if (!createdNew)
+            {
+                MessageBox.Show("更新程序已经在运行中。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+                Application.Current.Shutdown();
+                return;
+            }
+
+            // ★修改② 清理上一轮自我更新留下的旧更新器（此时旧进程已退出，可安全删除）
+            try { File.Delete(Path.Combine(AppContext.BaseDirectory, UpdaterOldName)); } catch { }
+
+            Log("Updater 启动。参数：" + string.Join(" ", args));
+
+            // 界面渲染出来！
+            var win = new UpdateWindow();
+            Application.Current.MainWindow = win;
+            win.Show();
+
+            try
+            {
+                var p = ParseArgs(args);
+                GithubUrl = p.GithubUrl ?? p.DownloadUrl;
+                TencentUrl = p.TencentUrl;
+                ExpectedSha256 = p.Sha256;
+                SelectedUrl = GithubUrl ?? TencentUrl ?? "";
+
+                // 如果用户是双击打开的（没有参数）
+                if (string.IsNullOrWhiteSpace(SelectedUrl))
+                {
+                    Log("未提供下载链接。");
+                    win.UpdateStatus("未获取到有效的更新地址，请从主程序启动。", isError: true);
+                    win.ActionBtn.Content = "关 闭";
+                    return; // 只 return 不 Shutdown，窗口留着
+                }
+
+                win.InitSources(GithubUrl, TencentUrl, (url) => SelectedUrl = url);
+                win.UpdateStatus("正在等待主程序退出...");
+                await WaitMainExitedAsync(p.RestartFromPid);
+
+                if (string.IsNullOrWhiteSpace(TencentUrl))
+                {
+                    win.BeginUpdate();
+                }
+                else
+                {
+                    win.UpdateStatus("请选择安装源后点击更新");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("初始化致命错误：" + ex);
+                win.UpdateStatus($"初始化失败：{ex.Message}", isError: true);
+            }
+        }
+
+        public static async Task<bool> StartUpdateAsync(UpdateWindow win)
+        {
+            string tempRoot = Path.Combine(AppContext.BaseDirectory, $"_update_{Guid.NewGuid():N}");
+            try
+            {
+                string zipPath = Path.Combine(tempRoot, "update.zip");
+                string extractDir = Path.Combine(tempRoot, "extract");
+                string backupDir = Path.Combine(tempRoot, "backup");
+                Directory.CreateDirectory(tempRoot);
+
+                win.UpdateStatus("正在连接服务器...");
+                try
+                {
+                    await DownloadAsync(SelectedUrl, zipPath, win);
+                }
+                catch (Exception ex) when (SelectedUrl == GithubUrl && !string.IsNullOrWhiteSpace(TencentUrl))
+                {
+                    Log($"GitHub 下载失败，尝试切换腾讯云: {ex.Message}");
+                    win.UpdateStatus("GitHub 下载失败，正在切换腾讯云...");
+                    SelectedUrl = TencentUrl!;
+                    await DownloadAsync(SelectedUrl, zipPath, win);
+                }
+
+                if (!string.IsNullOrWhiteSpace(ExpectedSha256))
+                {
+                    win.UpdateStatus("正在校验文件完整性...");
+                    string actual = ComputeSha256(zipPath);
+                    // OrdinalIgnoreCase：JSON 里小写哈希也能正确比对，无需改大小写
+                    if (!string.Equals(actual, ExpectedSha256, StringComparison.OrdinalIgnoreCase))
+                        throw new Exception("文件校验失败，更新包可能已损坏。");
+                }
+
+                win.UpdateStatus("正在解压更新包...");
+                win.UpdateProgress(40);
+                Directory.CreateDirectory(extractDir);
+                ZipFile.ExtractToDirectory(zipPath, extractDir, true);
+
+                string sourceDir = NormalizeExtractRoot(extractDir);
+                if (!File.Exists(Path.Combine(sourceDir, "TrustNTE.exe")))
+                    throw new Exception("更新包内未找到 TrustNTE.exe，无法替换。");
+
+                win.UpdateStatus("正在替换程序文件...");
+                win.UpdateProgress(60);
+                bool ok = ReplaceFiles(sourceDir, AppContext.BaseDirectory, backupDir);
+                if (!ok)
+                {
+                    Log("部分文件替换失败，开始回滚...");
+                    Rollback(backupDir, AppContext.BaseDirectory);
+                    throw new Exception("部分文件替换失败，已尝试回滚。");
+                }
+
+                try { Directory.Delete(tempRoot, true); } catch { }
+
+                // ★修改③ 不再自动拉起主程序 —— 显示完成页，由玩家自己决定启动还是退出
+                win.UpdateStatus("更新完成");
+                win.UpdateProgress(100);
+                win.ShowDoneState(updated: true);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log("更新失败：" + ex);
+                win.UpdateStatus($"更新失败：{ex.Message}", isError: true);
+                try { if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, true); } catch { }
+                return false;
+            }
+        }
+
+        private sealed class Params
+        {
+            public int? RestartFromPid;
+            public string? DownloadUrl;
+            public string? GithubUrl;
+            public string? TencentUrl;
+            public string? Sha256;
+        }
+
+        private static Params ParseArgs(string[] args)
+        {
+            var p = new Params();
+            for (int i = 0; i < args.Length; i++)
+            {
+                string a = args[i];
+                if (a.StartsWith("--restart-from-pid=", StringComparison.Ordinal) && int.TryParse(a[(a.IndexOf('=') + 1)..], out int pid1))
+                    p.RestartFromPid = pid1;
+                else if (a.StartsWith("--url=", StringComparison.Ordinal))
+                    p.DownloadUrl = a[(a.IndexOf('=') + 1)..];
+                else if (a.StartsWith("--gh-url=", StringComparison.Ordinal))
+                    p.GithubUrl = a[(a.IndexOf('=') + 1)..];
+                else if (a.StartsWith("--tx-url=", StringComparison.Ordinal))
+                    p.TencentUrl = a[(a.IndexOf('=') + 1)..];
+                else if (a.StartsWith("--sha256=", StringComparison.Ordinal))
+                    p.Sha256 = a[(a.IndexOf('=') + 1)..];
+            }
+            return p;
+        }
+
+        private static async Task WaitMainExitedAsync(int? pid)
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
+            if (pid.HasValue)
+            {
+                try
+                {
+                    using var proc = Process.GetProcessById(pid.Value);
+                    await proc.WaitForExitAsync(cts.Token);
+                }
+                catch { }
+                return;
+            }
+            foreach (var p in Process.GetProcessesByName("TrustNTE"))
+            {
+                try { using (p) await p.WaitForExitAsync(cts.Token); } catch { }
+            }
+        }
+
+        private static async Task DownloadAsync(string url, string dest, UpdateWindow win)
+        {
+            using var http = new HttpClient { Timeout = TimeSpan.FromMinutes(10) };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd("TrustNTE-Updater/1.0");
+
+            using var resp = await http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            if (!resp.IsSuccessStatusCode)
+            {
+                if (resp.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    throw new Exception("服务器上找不到该文件 (404)。");
+                throw new Exception($"服务器拒绝连接 ({(int)resp.StatusCode})");
+            }
+
+            long? total = resp.Content.Headers.ContentLength;
+            await using var src = await resp.Content.ReadAsStreamAsync();
+            await using var dst = File.Create(dest);
+            var buffer = new byte[81920];
+            long read = 0;
+            int n;
+            while ((n = await src.ReadAsync(buffer)) > 0)
+            {
+                await dst.WriteAsync(buffer, 0, n);
+                read += n;
+                if (total is > 0)
+                {
+                    int pct = (int)(read * 100 / total.Value);
+                    win.UpdateStatus($"正在下载 ({read / 1024 / 1024}MB / {total / 1024 / 1024}MB)...");
+                    win.UpdateProgress(pct * 0.4);
+                }
+            }
+            Log($"下载完成: {dest}");
+        }
+
+        private static string ComputeSha256(string path)
+        {
+            using var sha = SHA256.Create();
+            using var fs = File.OpenRead(path);
+            return Convert.ToHexString(sha.ComputeHash(fs));
+        }
+
+        private static string NormalizeExtractRoot(string root)
+        {
+            var dirs = Directory.GetDirectories(root);
+            var files = Directory.GetFiles(root);
+            if (dirs.Length == 1 && files.Length == 0) return dirs[0];
+            return root;
+        }
+
+        private static bool ReplaceFiles(string srcDir, string dstDir, string backupDir)
+        {
+            Directory.CreateDirectory(backupDir);
+            bool allOk = true;
+
+            foreach (var srcFile in Directory.EnumerateFiles(srcDir, "*", SearchOption.AllDirectories))
+            {
+                string rel = Path.GetRelativePath(srcDir, srcFile);
+                string fileName = Path.GetFileName(rel);
+
+                if (SkipFileNames.Any(s => string.Equals(s, fileName, StringComparison.OrdinalIgnoreCase)) ||
+                    SkipDirNames.Any(d => string.Equals(rel.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)[0], d, StringComparison.OrdinalIgnoreCase)))
+                    continue;
+
+                string dstFile = Path.Combine(dstDir, rel);
+                string tmp = dstFile + ".new";
+
+                try
+                {
+                    string? dir = Path.GetDirectoryName(dstFile);
+                    if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
+
+                    // ★修改④ 自我更新：运行中的更新器不能被覆盖，但可以先改名腾位子
+                    if (string.Equals(fileName, UpdaterExeName, StringComparison.OrdinalIgnoreCase) && File.Exists(dstFile))
+                    {
+                        string oldSelf = Path.Combine(dstDir, UpdaterOldName);
+                        try { File.Delete(oldSelf); } catch { }
+                        try
+                        {
+                            File.Move(dstFile, oldSelf); // Windows 允许对运行中的 exe 改名
+                            Log("旧更新器已改名为 " + UpdaterOldName + "，准备装入新版。");
+                        }
+                        catch (Exception ex)
+                        {
+                            // 极罕见：放弃更新器自身，主程序照常更新（不触发整包回滚）
+                            Log($"更新器自我替换失败（保留旧版）：{ex.Message}");
+                            try { File.Move(oldSelf, dstFile); } catch { } // 尽力改回去，保证目录里始终有更新器
+                            continue;
+                        }
+                    }
+
+                    if (File.Exists(dstFile))
+                    {
+                        string bakFile = Path.Combine(backupDir, rel);
+                        string? bakDir = Path.GetDirectoryName(bakFile);
+                        if (!string.IsNullOrEmpty(bakDir)) Directory.CreateDirectory(bakDir);
+                        File.Copy(dstFile, bakFile, true);
+                    }
+
+                    File.Copy(srcFile, tmp, true);
+
+                    if (File.Exists(dstFile))
+                    {
+                        try { File.Replace(tmp, dstFile, null, true); }
+                        catch (IOException) { File.Copy(tmp, dstFile, true); File.Delete(tmp); }
+                    }
+                    else
+                    {
+                        File.Move(tmp, dstFile);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log($"替换失败: {rel} -> {ex.Message}");
+                    allOk = false;
+                    try { if (File.Exists(tmp)) File.Delete(tmp); } catch { }
+                }
+            }
+
+            return allOk;
+        }
+
+        private static void Rollback(string backupDir, string dstDir)
+        {
+            if (!Directory.Exists(backupDir)) return;
+            foreach (var bakFile in Directory.EnumerateFiles(backupDir, "*", SearchOption.AllDirectories))
+            {
+                string rel = Path.GetRelativePath(backupDir, bakFile);
+                string dstFile = Path.Combine(dstDir, rel);
+                try { File.Copy(bakFile, dstFile, true); }
+                catch (Exception ex) { Log($"回滚失败: {rel} -> {ex.Message}"); }
+            }
+        }
+
+        // ★修改⑤ 保留方法但不再被自动调用（完成页"启动 TrustNTE"按钮接管启动职责）
+        public static void RestartMain()
+        {
+            var mainExe = Path.Combine(AppContext.BaseDirectory, "TrustNTE.exe");
+            if (!File.Exists(mainExe)) return;
+            try
+            {
+                Process.Start(new ProcessStartInfo(mainExe, $"--restart-from-pid={Environment.ProcessId}")
+                {
+                    UseShellExecute = true,
+                    WorkingDirectory = AppContext.BaseDirectory
+                });
+            }
+            catch { }
+        }
+
+        private static void Log(string msg)
+        {
+            try
+            {
+                string logDir = Path.Combine(AppContext.BaseDirectory, "log");
+                Directory.CreateDirectory(logDir);
+                File.AppendAllText(Path.Combine(logDir, $"update_{DateTime.Now:yyyyMMdd_HHmmss}.log"), $"[{DateTime.Now:HH:mm:ss}] {msg}\n");
+            }
+            catch { }
+        }
+    }
+}

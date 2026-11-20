@@ -1,0 +1,47 @@
+﻿<Window x:Class="TrustNTE.Views.Windows.DpsAnalyzerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers"
+        Title="{helpers:Trans 'TrustNTE DPS统计!让异环解放双手!TrustNTE与你同在!'}"
+        Width="1280" Height="840" MinWidth="1024" MinHeight="680"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="CanResize" Background="#0A0A12">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="44" CornerRadius="0" GlassFrameThickness="0"
+                        ResizeBorderThickness="6" UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#12121F" BorderBrush="#4D00F0FF" BorderThickness="0,0,0,1">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="14,0,0,0">
+                    <Image Source="/Assets/titlelogo.png" Width="24" Height="24" Stretch="Uniform"
+                 RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center">
+                        <Image.Effect>
+                            <DropShadowEffect Color="#00F0FF" BlurRadius="10" ShadowDepth="0" Opacity="0.9"/>
+                        </Image.Effect>
+                    </Image>
+                    <TextBlock Text="{helpers:Trans 'TrustNTE DPS统计'}" FontFamily="Cascadia Mono, Consolas" FontSize="15" FontWeight="Bold"
+                     Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#00F0FF" BlurRadius="8" ShadowDepth="0" Opacity="0.6"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock Text="{helpers:Trans '让异环解放双手!TrustNTE与你同在!'}" FontSize="12" Foreground="#8A8AA0"
+                     VerticalAlignment="Center" Margin="14,2,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Content="─" Width="42" Height="32" Background="Transparent" BorderThickness="0"
+                  Foreground="#8A8AA0" FontFamily="Cascadia Mono, Consolas" FontSize="12" Click="OnMinimize_Click"/>
+                    <Button Content="✕" Width="42" Height="32" Background="Transparent" BorderThickness="0"
+                  Foreground="#8A8AA0" FontFamily="Cascadia Mono, Consolas" FontSize="12" Click="OnClose_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <ContentControl Grid.Row="1" x:Name="Host"/>
+    </Grid>
+</Window>

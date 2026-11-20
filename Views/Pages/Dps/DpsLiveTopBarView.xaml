@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Dps.DpsLiveTopBarView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="DpsShared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="24,10,24,8">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <!-- 核心进程灯 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#00FF9C"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CoreLampOn}" Value="False">
+                                    <Setter Property="Fill" Value="#555"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Text="{helpers:Trans '核心进程'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+            </StackPanel>
+            <!-- 游戏进程灯 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#00FF9C"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding GameLampOn}" Value="False">
+                                    <Setter Property="Fill" Value="#555"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Text="{helpers:Trans '游戏 HTGame.exe'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+            </StackPanel>
+            <!-- 轨外之境灯 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="#555"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AbyssLampOn}" Value="True">
+                                    <Setter Property="Fill" Value="#FFE600"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Text="{helpers:Trans '轨外之境'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+            </StackPanel>
+            <!-- 计时徽章 -->
+            <Border Background="#1400FF9C" BorderBrush="#5500FF9C" BorderThickness="1" CornerRadius="3" Padding="10,5">
+                <TextBlock Text="{Binding ElapsedBadge}" FontFamily="Cascadia Mono, Consolas" Foreground="#00FF9C" FontWeight="Bold"/>
+            </Border>
+            <!-- 设计增项:实时状态文本( TODO: VM 将来有状态属性时改绑定) -->
+            <TextBlock Text="{helpers:Trans '抓包中 · 数据实时解析'}" FontSize="11" Foreground="#00FF9C"
+                       Opacity="0.9" Margin="14,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button Content="{helpers:Trans '🗑 清空数据'}" Style="{StaticResource NeoBtnDanger}" Margin="0,0,10,0" Command="{Binding ClearDataCommand}"/>
+            <Button Content="{helpers:Trans '■ 停止'}" Style="{StaticResource NeoBtnDanger}" Margin="0,0,10,0" Command="{Binding StopCaptureCommand}"/>
+            <Button Content="{helpers:Trans '◀ 返回'}" Style="{StaticResource NeoBtn}" Command="{Binding BackToRiskCommand}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

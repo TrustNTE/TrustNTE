@@ -1,0 +1,796 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.DpsAnalysisPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <DrawingBrush x:Key="GridPat" TileMode="Tile" Viewport="0,0,48,48" ViewportUnits="Absolute">
+            <DrawingBrush.Drawing>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Thickness="1" Brush="#0D00F0FF"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,48,48"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+        <Style x:Key="NeoBtn" TargetType="Button">
+            <Setter Property="Background" Value="#1400F0FF"/>
+            <Setter Property="Foreground" Value="#00F0FF"/>
+            <Setter Property="BorderBrush" Value="#4D00F0FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,7"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#2800F0FF"/>
+                                <Setter TargetName="bd" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#00F0FF" BlurRadius="14" ShadowDepth="0" Opacity="0.8"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.3"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NeoBtnDanger" TargetType="Button" BasedOn="{StaticResource NeoBtn}">
+            <Setter Property="Background" Value="#14FF00E5"/>
+            <Setter Property="Foreground" Value="#FF00E5"/>
+            <Setter Property="BorderBrush" Value="#66FF00E5"/>
+        </Style>
+
+        <!-- ═══ 时间线/质量区切换用的胶囊按钮 ═══ -->
+        <Style x:Key="NeoToggleBase" TargetType="ToggleButton">
+            <Setter Property="Foreground" Value="#00F0FF"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="bd" Background="#1400F0FF" BorderBrush="#4D00F0FF" BorderThickness="1"
+                                CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#2800F0FF"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="bd" Property="Background" Value="#3300F0FF"/>
+                                <Setter Property="Foreground" Value="#00FF9C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NeoRadio" TargetType="RadioButton" BasedOn="{StaticResource NeoToggleBase}"/>
+
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="#12121F"/>
+            <Setter Property="BorderBrush" Value="#4D00F0FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="14"/>
+        </Style>
+
+        <Style x:Key="KpiNum" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <Style x:Key="SecTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#8A8AA0"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="AttrRing" TargetType="Border">
+            <Setter Property="BorderBrush" Value="#667788"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="CornerRadius" Value="21"/>
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Attribute}" Value="相">
+                    <Setter Property="BorderBrush" Value="#FF66B3"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="灵">
+                    <Setter Property="BorderBrush" Value="#00F0FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="光">
+                    <Setter Property="BorderBrush" Value="#FFE600"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="暗">
+                    <Setter Property="BorderBrush" Value="#FF4D6D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="咒">
+                    <Setter Property="BorderBrush" Value="#B266FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="魂">
+                    <Setter Property="BorderBrush" Value="#9EFF6E"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AttrText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#99AABB"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Attribute}" Value="相">
+                    <Setter Property="Foreground" Value="#FF66B3"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="灵">
+                    <Setter Property="Foreground" Value="#00F0FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="光">
+                    <Setter Property="Foreground" Value="#FFE600"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="暗">
+                    <Setter Property="Foreground" Value="#FF4D6D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="咒">
+                    <Setter Property="Foreground" Value="#B266FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="魂">
+                    <Setter Property="Foreground" Value="#9EFF6E"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="AttrFill" TargetType="Rectangle">
+            <Setter Property="Fill" Value="#667788"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Attribute}" Value="相">
+                    <Setter Property="Fill" Value="#FF66B3"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="灵">
+                    <Setter Property="Fill" Value="#00F0FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="光">
+                    <Setter Property="Fill" Value="#FFE600"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="暗">
+                    <Setter Property="Fill" Value="#FF4D6D"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="咒">
+                    <Setter Property="Fill" Value="#B266FF"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Attribute}" Value="魂">
+                    <Setter Property="Fill" Value="#9EFF6E"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 头像:有图显图,无图显属性色首字(DataTrigger 切换,零转换器) -->
+        <DataTemplate x:Key="AvatarTpl">
+            <Grid>
+                <Image Source="{Binding AvatarPath}" Stretch="UniformToFill"
+               RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasAvatar}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <TextBlock Text="{Binding Initial}" FontSize="15" FontWeight="Bold"
+                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource AttrText}">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HasAvatar}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+        </DataTemplate>
+
+        <!-- 角色行(点击进详情) -->
+        <DataTemplate x:Key="CharRowTpl">
+            <Border CornerRadius="4" Padding="10,8" Margin="0,0,0,8" Cursor="Hand">
+                <Border.InputBindings>
+                    <MouseBinding Gesture="LeftClick"
+                        Command="{Binding DataContext.OpenCharacterCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                        CommandParameter="{Binding}"/>
+                </Border.InputBindings>
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#161628"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#1E1E30"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Style="{StaticResource AttrRing}" ClipToBounds="True">
+                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource AvatarTpl}"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" Margin="12,0,10,0" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="#E8E8F0"/>
+                            <Border Background="#0F0F1A" BorderThickness="1" BorderBrush="#2A2A40" CornerRadius="2" Margin="8,0,0,0" Padding="5,0">
+                                <TextBlock Text="{Binding Attribute}" FontSize="9" Style="{StaticResource AttrText}"/>
+                            </Border>
+                        </StackPanel>
+                        <Border Height="6" Background="#1E1E30" CornerRadius="3" Margin="0,7,0,0">
+                            <Rectangle Style="{StaticResource AttrFill}" HorizontalAlignment="Left"
+                         Width="{Binding BarWidth}" RadiusX="3" RadiusY="3"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding DamageStr}" FontSize="14" FontWeight="Bold" Foreground="#FFE600"
+                       HorizontalAlignment="Right" FontFamily="Cascadia Mono, Consolas"/>
+                        <TextBlock Text="{Binding DpsStr}" FontSize="10" Foreground="#8A8AA0" HorizontalAlignment="Right" Margin="0,3,0,0"/>
+                        <TextBlock Text="{Binding ShareStr}" FontSize="10" Foreground="#8A8AA0" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- 技能行 -->
+        <DataTemplate x:Key="SkillRowTpl">
+            <Border Background="#161628" CornerRadius="4" Padding="10,8" Margin="0,0,0,7">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Style="{StaticResource AttrFill}" Width="8" Height="8" RadiusX="2" RadiusY="2" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text="{Binding SkillName}" FontSize="12" Foreground="#C8CCD8"
+                     Margin="10,0,6,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Background="#14FF00E5" BorderBrush="#66FF00E5" BorderThickness="1" CornerRadius="2" Padding="4,0" Margin="0,0,8,0"
+                    Visibility="{Binding IsFollowUp, Converter={StaticResource BoolToVis}}">
+                            <TextBlock Text="FU" FontSize="8" Foreground="#FF00E5"/>
+                        </Border>
+                        <Border Width="130" Height="5" Background="#1E1E30" CornerRadius="2" VerticalAlignment="Center">
+                            <Rectangle Fill="#FFE600" HorizontalAlignment="Left" Width="{Binding BarWidth}" RadiusX="2" RadiusY="2"/>
+                        </Border>
+                        <TextBlock Text="{Binding PctStr}" FontSize="11" Foreground="#FFE600" Width="46" TextAlignment="Right" Margin="8,0,0,0"/>
+                        <TextBlock Text="{Binding DamageStr}" FontSize="10" Foreground="#8A8AA0" Width="78" TextAlignment="Right" Margin="8,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!-- 时间线桶 -->
+        <DataTemplate x:Key="BucketTpl">
+            <Rectangle Width="7" Height="{Binding HeightPct}" Margin="0,0,1,0" VerticalAlignment="Bottom">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Fill" Value="#00F0FF"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Kind}" Value="tstop">
+                                <Setter Property="Fill" Value="#3A3F4C"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Kind}" Value="marker">
+                                <Setter Property="Fill" Value="#FF00E5"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+        </DataTemplate>
+
+        <!-- 质量 chip -->
+        <DataTemplate x:Key="ChipTpl">
+            <Border CornerRadius="2" Padding="8,4" Margin="0,0,8,6" Background="#161628" BorderThickness="1">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderBrush" Value="#2A2A40"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsWarn}" Value="True">
+                                <Setter Property="BorderBrush" Value="#66FFE600"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Label}" FontSize="10" Foreground="#8A8AA0"/>
+                    <TextBlock Text="{Binding ValueStr}" FontSize="10" Margin="6,0,0,0" FontFamily="Cascadia Mono, Consolas">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#00FF9C"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsWarn}" Value="True">
+                                        <Setter Property="Foreground" Value="#FFE600"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="#0A0A12">
+        <Rectangle Fill="{StaticResource GridPat}"/>
+
+        <!-- ═══ 视图① 风险告知 ═══ -->
+        <Grid Visibility="{Binding IsRiskView, Converter={StaticResource BoolToVis}}">
+            <Border Style="{StaticResource Card}" MaxWidth="640" VerticalAlignment="Center" Margin="0,0,0,30" Padding="26">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <TextBlock Text="⚠ " FontSize="16" Foreground="#FF00E5"/>
+                        <TextBlock Text="{helpers:Trans '风险告知'}" FontSize="16" FontWeight="Bold" Foreground="#FF00E5"/>
+                    </StackPanel>
+                    <TextBlock Text="{helpers:Trans '角色DPS伤害统计,是用Npcap抓包'}" FontSize="15" FontWeight="Bold" Foreground="#FF3355" Margin="0,0,0,10"/>
+                    <TextBlock Foreground="#C8CCD8" FontSize="13" LineHeight="22" TextWrapping="Wrap">
+                        <Run Text="{helpers:Trans '启动后,本工具将 '}"/><Run Text="{helpers:Trans '截获本机与游戏服务器之间的游戏数据包,并解析其中的伤害记录'}" Foreground="#00F0FF" FontWeight="Bold"/><Run Text="{helpers:Trans '。该操作涉及网络流量监听,存在被杀毒软件拦截或误报的可能,请确认你了解并自愿承担相关风险。'}"/>
+                    </TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,4">
+                        <TextBlock Text="{helpers:Trans '📥 抓包依赖: '}" FontSize="12" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+                        <TextBlock VerticalAlignment="Center" FontSize="12">
+              <Hyperlink NavigateUri="https://npcap.com" RequestNavigate="OnNpcapLink_Click" Foreground="#00F0FF"><Run Text="{helpers:Trans '下载 Npcap(官方地址) ↗'}"/></Hyperlink>
+
+                        </TextBlock>
+                        <TextBlock Text="{helpers:Trans '  没有它就没有数据'}" FontSize="12" Foreground="#00FF9C" FontWeight="Bold" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <CheckBox Content="{helpers:Trans '我已了解风险,并自愿承担一切后果'}" IsChecked="{Binding AcceptedRisk}" Margin="0,16,0,8" Foreground="#C8CCD8"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Text="{helpers:Trans '🌐 监听网卡: '}" FontSize="12" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+                        <ComboBox ItemsSource="{Binding Devices}" SelectedItem="{Binding SelectedDevice}" DisplayMemberPath="DisplayName" Width="260"/>
+                        <Button Content="{helpers:Trans '↻ 刷新'}" Style="{StaticResource NeoBtn}" Margin="10,0,0,0" Command="{Binding RefreshDevicesCommand}"/>
+                    </StackPanel>
+                    <Button Content="{helpers:Trans '▶ 启动抓包'}" Margin="0,18,0,0" FontSize="15" Padding="0,12"
+                  Style="{StaticResource NeoBtn}" Command="{Binding StartCaptureCommand}"
+                  IsEnabled="{Binding AcceptedRisk}"/>
+                    <TextBlock Text="{helpers:Trans '原始 PCAP 落盘默认关闭 · 数据仅存内存,停止采集即结算'}" FontSize="10" Foreground="#8A8AA0" Margin="0,10,0,0"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- ═══ 视图② 采集中(主区 2×2 等分:上排 角色榜|技能榜,下排 深渊|时间线) ═══ -->
+        <Grid Visibility="{Binding IsLiveView, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶栏(原样未动) -->
+            <Grid Margin="24,10,24,8">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="#00FF9C"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CoreLampOn}" Value="False">
+                                            <Setter Property="Fill" Value="#555"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{helpers:Trans '核心进程'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="#00FF9C"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding GameLampOn}" Value="False">
+                                            <Setter Property="Fill" Value="#555"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{helpers:Trans '游戏 HTGame.exe'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,0">
+                        <Ellipse Width="8" Height="8" VerticalAlignment="Center" Margin="0,0,5,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Setter Property="Fill" Value="#555"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding AbyssLampOn}" Value="True">
+                                            <Setter Property="Fill" Value="#FFE600"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{helpers:Trans '轨外之境'}" FontSize="11" Foreground="#8A8AA0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Border Background="#1400FF9C" BorderBrush="#5500FF9C" BorderThickness="1" CornerRadius="3" Padding="10,5">
+                        <TextBlock Text="{Binding ElapsedBadge}" FontFamily="Cascadia Mono, Consolas" Foreground="#00FF9C" FontWeight="Bold"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button Content="{helpers:Trans '🗑 清空数据'}" Style="{StaticResource NeoBtnDanger}" Margin="0,0,10,0" Command="{Binding ClearDataCommand}"/>
+                    <Button Content="{helpers:Trans '■ 停止'}" Style="{StaticResource NeoBtnDanger}" Margin="0,0,10,0" Command="{Binding StopCaptureCommand}"/>
+                    <Button Content="{helpers:Trans '◀ 返回'}" Style="{StaticResource NeoBtn}" Command="{Binding BackToRiskCommand}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- KPI 六卡(原样未动,仅确认行号) -->
+            <UniformGrid Grid.Row="1" Rows="1" Columns="6" Margin="24,0,24,10">
+                <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '总伤害 TOTAL DMG'}"/>
+                        <TextBlock Text="{Binding TotalDamageStr}" Style="{StaticResource KpiNum}" Foreground="#FFE600"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '团队 DPS'}"/>
+                        <TextBlock Text="{Binding TeamDpsStr}" Style="{StaticResource KpiNum}" Foreground="#00F0FF"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '战斗时长'}"/>
+                        <TextBlock Text="{Binding DurationStr}" Style="{StaticResource KpiNum}" Foreground="#00FF9C"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '承受伤害'}"/>
+                        <TextBlock Text="{Binding DamageTakenStr}" Style="{StaticResource KpiNum}" Foreground="#FF00E5"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '命中数 HITS'}"/>
+                        <TextBlock Text="{Binding HitsStr}" Style="{StaticResource KpiNum}" Foreground="#00F0FF"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SecTitle}" Text="{helpers:Trans '削减最大生命 MAX HP REDUCTION'}"/>
+                        <TextBlock Text="{Binding MaxHpReductionStr}" Style="{StaticResource KpiNum}" Foreground="#FFE600"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- ═══ 主区 2×2 等分(上排=榜单,下排=深渊|时间线,分割线对齐) ═══ -->
+            <Grid Grid.Row="2" Margin="24,0,24,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- (0,0) 角色榜 -->
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,8,8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource SecTitle}">
+                <Run Foreground="#E8E8F0" Text="{helpers:Trans '伤害输出'}"/><Run Foreground="#00F0FF"> CHARACTERS</Run><Run Text="{helpers:Trans ' · 点击行看详情'}"/>
+                        </TextBlock>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Characters}" ItemTemplate="{StaticResource CharRowTpl}"/>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!-- (0,1) 技能榜 -->
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource Card}" Margin="8,0,0,8">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource SecTitle}">
+                <Run Foreground="#E8E8F0" Text="{helpers:Trans '技能统计'}"/><Run Foreground="#00F0FF"> SKILLS</Run><Run Text="{helpers:Trans ' · FU = 追击伤害'}"/>
+                        </TextBlock>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Skills}" ItemTemplate="{StaticResource SkillRowTpl}"/>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!-- (1,0) 深渊纵列:楼层徽章 + 上半 + 下半(真实绑定,上下等分) -->
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,0,8,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Background="#14FFE600" BorderBrush="#66FFE600" BorderThickness="1" CornerRadius="4" Padding="12,8" Margin="0,0,0,8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding AbyssFloorText}" FontSize="22" FontWeight="Bold" Foreground="#FFE600" VerticalAlignment="Center" FontFamily="Cascadia Mono, Consolas"/>
+                            <TextBlock Text="{Binding AbyssStateText}" FontSize="9" Foreground="#8A8AA0" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,8">
+                        <StackPanel>
+                            <Grid>
+                                <TextBlock Text="{helpers:Trans '▲ 上半'}" FontSize="11" Foreground="#00F0FF"/>
+                                <TextBlock Text="{Binding UpperDur}" FontSize="11" Foreground="#8A8AA0" HorizontalAlignment="Right" FontFamily="Cascadia Mono, Consolas"/>
+                            </Grid>
+                            <TextBlock Text="{Binding UpperDmg}" FontSize="18" FontWeight="Bold" Foreground="#00F0FF" Margin="0,5,0,0" FontFamily="Cascadia Mono, Consolas"/>
+                            <TextBlock Text="{Binding UpperSub}" FontSize="10" Foreground="#8A8AA0" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Row="2" Style="{StaticResource Card}">
+                        <StackPanel>
+                            <Grid>
+                                <TextBlock Text="{helpers:Trans '▼ 下半'}" FontSize="11" Foreground="#00F0FF"/>
+                                <TextBlock Text="{Binding LowerDur}" FontSize="11" Foreground="#8A8AA0" HorizontalAlignment="Right" FontFamily="Cascadia Mono, Consolas"/>
+                            </Grid>
+                            <TextBlock Text="{Binding LowerDmg}" FontSize="18" FontWeight="Bold" Foreground="#00F0FF" Margin="0,5,0,0" FontFamily="Cascadia Mono, Consolas"/>
+                            <TextBlock Text="{Binding LowerSub}" FontSize="10" Foreground="#8A8AA0" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- (1,1) 时间线:绘图区自适应填充,三模式切换原样保留 -->
+                <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Card}" Margin="8,0,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Style="{StaticResource SecTitle}" VerticalAlignment="Center" xml:space="preserve">
+                  <Run Foreground="#E8E8F0" Text="{helpers:Trans 'DPS 时间线'}"/><Run Foreground="#00F0FF"> TIMELINE</Run><Run Text="{helpers:Trans ' · bucket 1.0s'}"/>
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <RadioButton GroupName="tlm" IsChecked="{Binding IsBarMode}" Content="{helpers:Trans '▮ 柱状'}" Style="{StaticResource NeoRadio}" Margin="0,0,6,0"/>
+                                <RadioButton GroupName="tlm" IsChecked="{Binding IsLineMode}" Content="{helpers:Trans '〰 曲线'}" Style="{StaticResource NeoRadio}" Margin="0,0,6,0"/>
+                                <RadioButton GroupName="tlm" IsChecked="{Binding IsDonutMode}" Content="{helpers:Trans '◕ 占比'}" Style="{StaticResource NeoRadio}"/>
+                            </StackPanel>
+                        </Grid>
+                        <Border Grid.Row="1" Background="#0D0D18" CornerRadius="3" ClipToBounds="True">
+                            <Grid>
+                                <!-- 网格线:四等分行,取 25%/50%/75% 三条(圆环模式隐藏) -->
+                                <Grid IsHitTestVisible="False">
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDonutMode}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Border Grid.Row="0" BorderBrush="#1FFFFFFF" BorderThickness="0,0,0,1"/>
+                                    <Border Grid.Row="1" BorderBrush="#1FFFFFFF" BorderThickness="0,0,0,1"/>
+                                    <Border Grid.Row="2" BorderBrush="#1FFFFFFF" BorderThickness="0,0,0,1"/>
+                                </Grid>
+                                <!-- 柱状 -->
+                                <ItemsControl ItemsSource="{Binding TimelineBars}" ItemTemplate="{StaticResource BucketTpl}" Margin="4,0,4,0" VerticalAlignment="Bottom">
+                                    <ItemsControl.Style>
+                                        <Style TargetType="ItemsControl">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsBarMode}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ItemsControl.Style>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <!-- 曲线(面积 + 折线) -->
+                                <Grid Margin="6">
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsLineMode}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Polygon Points="{Binding AreaPoints}" Fill="#3300F0FF" Stretch="Fill"/>
+                                    <Polyline Points="{Binding LinePoints}" Stroke="#00F0FF" StrokeThickness="2" StrokeLineJoin="Round" Stretch="Fill"/>
+                                </Grid>
+                                <!-- 圆环占比 + 中心叠加 -->
+                                <Grid>
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDonutMode}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <ItemsControl ItemsSource="{Binding DonutSlices}" Width="200" Height="200" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Grid/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Path Data="{Binding Geometry}" Fill="{Binding FillBrush}" Stroke="#0A0A12" StrokeThickness="2" ToolTip="{Binding Label}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock Text="{helpers:Trans '团队 DPS'}" FontSize="10" Foreground="#8A8AA0" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding TeamDpsStr}" FontSize="18" FontWeight="Bold" Foreground="#00F0FF" HorizontalAlignment="Center" FontFamily="Cascadia Mono, Consolas" Margin="0,2,0,0"/>
+                                        <TextBlock Text="{Binding TotalDamageStr}" FontSize="11" Foreground="#FFE600" HorizontalAlignment="Center" FontFamily="Cascadia Mono, Consolas" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,8,0,0">
+                            <Rectangle Width="14" Height="3" Fill="#00F0FF" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock Text="{helpers:Trans '团队 DPS'}" FontSize="10" Foreground="#8A8AA0" Margin="0,0,14,0"/>
+                            <Rectangle Width="14" Height="3" Fill="#3A3F4C" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock Text="{helpers:Trans '时停区间(已扣除)'}" FontSize="10" Foreground="#8A8AA0" Margin="0,0,14,0"/>
+                            <Rectangle Width="14" Height="3" Fill="#FF00E5" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock Text="{helpers:Trans '深渊换半 / 通关标记'}" FontSize="10" Foreground="#8A8AA0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ═══ 数据质量(默认折叠为一行,点击展开;行号 4→3) ═══ -->
+            <Border Grid.Row="3" Style="{StaticResource Card}" Margin="24,0,24,14" Padding="14,10">
+                <StackPanel>
+                    <Grid>
+                        <TextBlock Style="{StaticResource SecTitle}" VerticalAlignment="Center" Margin="0">
+                <Run Foreground="#E8E8F0" Text="{helpers:Trans '数据质量'}"/><Run Foreground="#00F0FF"> QUALITY</Run><Run Text="{helpers:Trans ' · 21 counters'}"/>
+                        </TextBlock>
+                        <ToggleButton x:Name="QualityToggle" HorizontalAlignment="Right">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton" BasedOn="{StaticResource NeoToggleBase}">
+                                    <Setter Property="Content" Value="{helpers:Trans '展开 ▾'}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Content" Value="{helpers:Trans '收起 ▴'}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding QualityItems}" ItemTemplate="{StaticResource ChipTpl}" Margin="0,10,0,0" Visibility="{Binding IsChecked, ElementName=QualityToggle, Converter={StaticResource BoolToVis}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+
+        <!-- ═══ 视图③ 角色详情 ═══ -->
+        <Grid Visibility="{Binding IsDetailView, Converter={StaticResource BoolToVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Margin="24,10,24,8">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="{helpers:Trans '◀ 返回采集中'}" Style="{StaticResource NeoBtn}" Command="{Binding BackToLiveCommand}"/>
+                    <Border Style="{StaticResource AttrRing}" Margin="14,0,0,0" ClipToBounds="True" DataContext="{Binding Detail}">
+                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource AvatarTpl}"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                        <StackPanel Orientation="Horizontal" DataContext="{Binding Detail}">
+                            <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Bold" Foreground="#E8E8F0"/>
+                            <Border Background="#0F0F1A" BorderThickness="1" BorderBrush="#2A2A40" CornerRadius="2" Margin="8,0,0,0" Padding="5,0">
+                                <TextBlock Text="{Binding Attribute}" FontSize="9" Style="{StaticResource AttrText}"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" DataContext="{Binding Detail}" Margin="0,3,0,0">
+                            <TextBlock Text="{helpers:Trans '累计伤害 '}" FontSize="10" Foreground="#8A8AA0"/>
+                            <TextBlock Text="{Binding TotalStr}" FontSize="10" Foreground="#FFE600" FontFamily="Cascadia Mono, Consolas"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="24,0,24,10" MaxHeight="230">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource SecTitle}" xml:space="preserve">
+            <Run Foreground="#E8E8F0" Text="{helpers:Trans '技能聚合'}"/><Run Foreground="#00F0FF"> SKILLS</Run><Run Text="{helpers:Trans ' · Q / E / 环合 / 追击'}"/>
+                    </TextBlock>
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding DetailSkills}" ItemTemplate="{StaticResource SkillRowTpl}"/>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Style="{StaticResource Card}" Margin="24,0,24,14">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource SecTitle}">
+            <Run Foreground="#E8E8F0" Text="{helpers:Trans '逐击明细'}"/><Run Foreground="#00F0FF"> AXIS</Run>
+                    </TextBlock>
+                    <ListView Grid.Row="1" ItemsSource="{Binding AxisRows}" Background="Transparent"
+                    BorderThickness="0" Foreground="#C8CCD8" FontSize="12">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="{helpers:Trans '时间'}" DisplayMemberBinding="{Binding TimeStr}" Width="100"/>
+                                <GridViewColumn Header="{helpers:Trans '类型'}" DisplayMemberBinding="{Binding TypeStr}" Width="110"/>
+                                <GridViewColumn Header="{helpers:Trans '伤害'}" DisplayMemberBinding="{Binding DamageStr}" Width="140"/>
+                                <GridViewColumn Header="{helpers:Trans '目标'}" DisplayMemberBinding="{Binding TargetStr}" Width="240"/>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.Resources>
+                            <Style TargetType="GridViewColumnHeader">
+                                <Setter Property="Background" Value="#161628"/>
+                                <Setter Property="Foreground" Value="#00F0FF"/>
+                                <Setter Property="BorderBrush" Value="#2A2A40"/>
+                                <Setter Property="Padding" Value="8,6"/>
+                            </Style>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="4,3"/>
+                                <Setter Property="BorderBrush" Value="#1E1E30"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                        </ListView.Resources>
+                    </ListView>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

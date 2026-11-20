@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Dps.DpsQualityView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="DpsShared.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Border Style="{StaticResource Card}" Margin="24,0,24,14" Padding="14,10">
+        <StackPanel>
+            <Grid>
+                <TextBlock Style="{StaticResource SecTitle}" VerticalAlignment="Center" Margin="0">
+                    <Run Foreground="#E8E8F0" Text="{helpers:Trans '数据质量'}"/><Run Foreground="#00F0FF"> QUALITY</Run>
+                </TextBlock>
+                <ToggleButton x:Name="QualityToggle" HorizontalAlignment="Right">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource NeoToggleBase}">
+                            <Setter Property="Content" Value="{helpers:Trans '展开 ▾'}"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter Property="Content" Value="{helpers:Trans '收起 ▴'}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding QualityItems}" ItemTemplate="{StaticResource ChipTpl}" Margin="0,10,0,0"
+                          Visibility="{Binding IsChecked, ElementName=QualityToggle, Converter={StaticResource BoolToVis}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </StackPanel>
+    </Border>
+</UserControl>

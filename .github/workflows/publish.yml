@@ -1,0 +1,59 @@
+name: publish
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: 编译发布版
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}".TrimStart('v')
+          echo "使用版本号: $v"
+          dotnet restore TrustNTE.update\TrustNTE.update.csproj -p:Configuration=Release -p:RuntimeIdentifiers=win-x64 -p:SelfContained=true
+          dotnet publish TrustNTE.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false -p:Version=$v -o publish
+
+      - name: 打包 zip
+        run: Compress-Archive -Path publish/* -DestinationPath TrustNTE_${{ github.ref_name }}.zip
+
+      - name: 安装 Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: 编译安装包
+        run: |
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" /DAppVersion=${{ github.ref_name }} /DMyAppVersion=${{ github.ref_name }} setup.iss
+          Rename-Item "installer/TrustNTE-setup.exe" "Installer.${{ github.ref_name }}.exe"
+
+      - name: 生成 SHA256 校验文件
+        shell: pwsh
+        run: |
+          $files = @(
+            "TrustNTE_${{ github.ref_name }}.zip",
+            "installer/Installer.${{ github.ref_name }}.exe"
+          )
+          foreach ($f in $files) {
+            $hash = (Get-FileHash -Path $f -Algorithm SHA256).Hash.ToLower()
+            "$hash  $(Split-Path -Leaf $f)" | Out-File -FilePath "$f.sha256" -Encoding ascii
+            Write-Host "生成 $f.sha256 : $hash"
+          }
+
+      - name: 创建 Release 并上传
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            TrustNTE_${{ github.ref_name }}.zip
+            installer/Installer.${{ github.ref_name }}.exe
+            TrustNTE_${{ github.ref_name }}.zip.sha256
+            installer/Installer.${{ github.ref_name }}.exe.sha256

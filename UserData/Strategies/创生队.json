@@ -1,0 +1,50 @@
+{
+  "Schema": 1,
+  "Info": {
+    "Name": "创生队",
+    "Author": "本地",
+    "Description": "",
+    "Config": null,
+    "PreActions": null
+  },
+  "Team": [
+    "九原",
+    "娜娜莉",
+    "伊洛伊",
+    "零"
+  ],
+  "Actions": [
+    {
+      "Name": "九原-seq",
+      "Character": "九原",
+      "Action": "",
+      "Condition": null,
+      "EnsureCast": false,
+      "Index": 0
+    },
+    {
+      "Name": "娜娜莉-seq",
+      "Character": "娜娜莉",
+      "Action": "",
+      "Condition": null,
+      "EnsureCast": false,
+      "Index": 0
+    },
+    {
+      "Name": "伊洛伊-seq",
+      "Character": "伊洛伊",
+      "Action": "",
+      "Condition": null,
+      "EnsureCast": false,
+      "Index": 0
+    },
+    {
+      "Name": "零-seq",
+      "Character": "零",
+      "Action": "",
+      "Condition": null,
+      "EnsureCast": false,
+      "Index": 0
+    }
+  ]
+}

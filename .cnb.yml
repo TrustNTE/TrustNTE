@@ -1,0 +1,32 @@
+# TrustNTE CNB 流水线：把 GitHub 最新 Release 同步到 CNB Releases
+#
+# 触发方式：
+#   1. CNB 仓库页面上的「运行流水线」按钮（web_trigger_one）
+#   2. API 调用（api_trigger_one）
+
+main:
+  web_trigger_one:
+    - docker:
+        image: python:3.11
+      imports:
+        - https://cnb.cool/TrustNTE/secret/-/blob/main/env.yml
+      stages:
+        - name: 同步最新 Release 到 CNB
+          script: |
+            cd .github/workflows
+            pip install -r requirements.txt
+            python sync_release_to_cnb.py --cnb-token $CNB_TOKEN --github-token $GITHUB_TOKEN
+            echo done!
+
+  api_trigger_one:
+    - docker:
+        image: python:3.11
+      imports:
+        - https://cnb.cool/TrustNTE/secret/-/blob/main/env.yml
+      stages:
+        - name: API 触发同步
+          script: |
+            cd .github/workflows
+            pip install -r requirements.txt
+            python sync_release_to_cnb.py --cnb-token $CNB_TOKEN --github-token $GITHUB_TOKEN
+            echo done!

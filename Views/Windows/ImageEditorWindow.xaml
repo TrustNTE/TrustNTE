@@ -1,0 +1,167 @@
+﻿<ui:FluentWindow x:Class="TrustNTE.Views.ImageEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:helpers="clr-namespace:TrustNTE.Helpers"
+        Title="{helpers:Trans '图像编辑'}"
+        Height="600" Width="980" MinHeight="520" MinWidth="840"
+        WindowStartupLocation="CenterOwner"
+        WindowBackdropType="Mica" ExtendsContentIntoTitleBar="True"
+        Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="{helpers:Trans '图像编辑'}">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="/Assets/titlelogo.ico"/>
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <Grid Grid.Row="1" Margin="12,4,12,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="180"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 左工具条 -->
+            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                <RadioButton Content="{helpers:Trans '移动'}" GroupName="edTool" MinWidth="68" Margin="0,0,0,4"
+                             IsChecked="{Binding IsMoveTool}"/>
+                <RadioButton Content="{helpers:Trans '矩形'}" GroupName="edTool" MinWidth="68" Margin="0,0,0,4"
+                             IsChecked="{Binding IsRectTool}"/>
+                <RadioButton Content="{helpers:Trans '圆形'}" GroupName="edTool" MinWidth="68" Margin="0,0,0,4"
+                             IsChecked="{Binding IsCircleTool}"/>
+                <RadioButton Content="{helpers:Trans '吸管'}" GroupName="edTool" MinWidth="68" Margin="0,0,0,4"
+                             IsChecked="{Binding IsPickTool}"/>
+                <RadioButton Content="{helpers:Trans '填充'}" GroupName="edTool" MinWidth="68" Margin="0,0,0,10"
+                             IsChecked="{Binding IsFillTool}"/>
+                <ui:Button Content="{helpers:Trans '放大'}" Command="{Binding ZoomInCommand}" MinWidth="68" Margin="0,0,0,4"/>
+                <ui:Button Content="{helpers:Trans '缩小'}" Command="{Binding ZoomOutCommand}" MinWidth="68" Margin="0,0,0,10"/>
+                <ui:Button Content="{helpers:Trans '自动剪裁'}" Command="{Binding AutoCropCommand}" MinWidth="68" Margin="0,0,0,4"/>
+                <ui:Button Content="{helpers:Trans '撤销'}" Command="{Binding UndoCommand}" MinWidth="68" Margin="0,0,0,10"
+                           IsEnabled="{Binding CanUndo}"/>
+                <ui:Button Content="{helpers:Trans '反选'}" Command="{Binding InvertSelectionCommand}" MinWidth="68" Margin="0,0,0,4"/>
+                <ui:Button Content="{helpers:Trans '删选区外'}" Command="{Binding DeleteOutsideCommand}" MinWidth="68" Margin="0,0,0,4"/>
+                <ui:Button Content="{helpers:Trans '填选区外'}" Command="{Binding FillOutsideCommand}" MinWidth="68" Margin="0,0,0,4"/>
+                <ui:Button Content="{helpers:Trans '取消选区'}" Command="{Binding ClearSelCommand}" MinWidth="68"/>
+            </StackPanel>
+
+            <!-- 图形区域 -->
+            <Border Grid.Column="1" CornerRadius="8" BorderThickness="1"
+                    Background="{ui:ThemeResource ControlFillColorDefaultBrush}"
+                    BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}">
+                <ScrollViewer x:Name="EditorScroll" HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Auto"
+                              PreviewMouseWheel="EditorScroll_PreviewMouseWheel">
+                    <Grid x:Name="EditorEventGrid" Background="Transparent" Cursor="Cross"
+                          MouseMove="EditorGrid_MouseMove" MouseLeave="EditorGrid_MouseLeave"
+                          MouseLeftButtonDown="EditorGrid_MouseDown"
+                          MouseLeftButtonUp="EditorGrid_MouseUp">
+                        <Image x:Name="EditorImageCtl" Source="{Binding EditorImage}" Stretch="None"
+                               RenderOptions.BitmapScalingMode="NearestNeighbor">
+                            <Image.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}"/>
+                            </Image.LayoutTransform>
+                        </Image>
+                        <Canvas x:Name="RectCanvas" IsHitTestVisible="False">
+                            <Rectangle x:Name="InvTop" Fill="#66000000" Visibility="Collapsed"/>
+                            <Rectangle x:Name="InvBottom" Fill="#66000000" Visibility="Collapsed"/>
+                            <Rectangle x:Name="InvLeft" Fill="#66000000" Visibility="Collapsed"/>
+                            <Rectangle x:Name="InvRight" Fill="#66000000" Visibility="Collapsed"/>
+                            <Rectangle x:Name="SelRect" Stroke="#00E000" StrokeThickness="1"
+                                       StrokeDashArray="4 2" Visibility="Collapsed"/>
+                            <Ellipse x:Name="SelEllipse" Stroke="#00E000" StrokeThickness="1"
+                                     StrokeDashArray="4 2" Visibility="Collapsed"/>
+                        </Canvas>
+                    </Grid>
+                </ScrollViewer>
+            </Border>
+
+            <!-- 右栏 -->
+            <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <Border Width="22" Height="22" CornerRadius="4" Background="{Binding RgbSwatch}"
+                            BorderThickness="1" BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"
+                            VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding RgbInput, UpdateSourceTrigger=PropertyChanged}"
+                             Width="100" Margin="8,0,0,0" FontFamily="Consolas" FontSize="12"/>
+                </StackPanel>
+                <TextBlock Text="{helpers:Trans '色块 / HEX'}" FontWeight="SemiBold" Margin="0,0,0,4" FontSize="12"/>
+                <DataGrid ItemsSource="{Binding Colors}" SelectedItem="{Binding SelectedColor}"
+                          AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                          CanUserSortColumns="False" SelectionMode="Single" HeadersVisibility="Column"
+                          RowHeight="26" GridLinesVisibility="Horizontal" Background="Transparent" FontSize="11"
+                          Height="300">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{helpers:Trans '色块'}" Width="40">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Width="18" Height="18" CornerRadius="3" Background="{Binding Swatch}"
+                                            BorderThickness="1"
+                                            BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="HEX" Binding="{Binding Hex}" IsReadOnly="True" Width="*"/>
+                    </DataGrid.Columns>
+                    <DataGrid.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick"
+                                      Command="{Binding LoadSelectedColorCommand}"/>
+                    </DataGrid.InputBindings>
+                </DataGrid>
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBox Text="{Binding RectResult, Mode=OneWay}" IsReadOnly="True" Width="90"
+                             FontFamily="Consolas" FontSize="11"/>
+                    <ui:Button Content="{helpers:Trans '复制选框'}" Command="{Binding CopyRectCommand}"
+                               MinWidth="60" Margin="6,0,0,0"/>
+                </StackPanel>
+                <ui:Button Content="{helpers:Trans '删色'}" Command="{Binding RemoveColorCommand}"
+                           MinWidth="56" Margin="0,8,0,0" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,8,0,0" TextWrapping="Wrap"
+                           Foreground="{ui:ThemeResource TextFillColorTertiaryBrush}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 底部 -->
+        <Grid Grid.Row="2" Margin="12,4,12,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <WrapPanel Grid.Column="0" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                    <TextBlock Text="{helpers:Trans '填充容差'}" VerticalAlignment="Center" Margin="0,0,4,0" FontSize="12"/>
+                    <TextBox Text="{Binding FillTolerance}" Width="44" FontSize="12"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                    <TextBlock Text="{helpers:Trans '剪裁容差'}" VerticalAlignment="Center" Margin="0,0,4,0" FontSize="12"/>
+                    <TextBox Text="{Binding CropTolerance}" Width="44" FontSize="12"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                    <TextBlock Text="{helpers:Trans '二值化阈值'}" VerticalAlignment="Center" Margin="0,0,4,0" FontSize="12"/>
+                    <Slider Minimum="0" Maximum="255" Width="110" VerticalAlignment="Center"
+                            IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding BinThreshold}"/>
+                    <TextBlock Text="{Binding BinThreshold}" VerticalAlignment="Center" Margin="4,0,8,0" Width="26" FontSize="12"/>
+                    <ui:Button Content="{helpers:Trans '二值化'}" Command="{Binding BinarizeCommand}" MinWidth="56"/>
+                </StackPanel>
+                <TextBlock Text="{helpers:Trans '有选区: 自动剪裁=只留选区 | 无选区: 四角同色裁剪 | Ctrl+T 同效 | Esc 取消选区'}"
+                           VerticalAlignment="Center" FontSize="11"
+                           Foreground="{ui:ThemeResource TextFillColorTertiaryBrush}"/>
+            </WrapPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <ui:Button Content="{helpers:Trans '载入图片'}" Command="{Binding LoadImageFromFileCommand}"
+                           MinWidth="70" Margin="0,0,8,0"/>
+                <ui:Button Content="{helpers:Trans '保存返回'}" Command="{Binding SaveReturnCommand}"
+                           Appearance="Primary" MinWidth="80" Margin="0,0,8,0"/>
+                <ui:Button Content="{helpers:Trans '放弃更改'}" Command="{Binding DiscardCommand}" MinWidth="80"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ui:FluentWindow>

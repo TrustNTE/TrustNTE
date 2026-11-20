@@ -1,0 +1,12 @@
+{
+  "version": "0.0.11",
+  "gray": 100,
+  "release_note": "目前只支持 GitHub 下载。独立任务仅开放超强音和自动钓鱼，其他功能尚未完成。",
+  "download_url_template": "https://github.com/TrustNTE/TrustNTE/releases/download/v{version}/TrustNTE_v{version}.zip",
+  "download_urls": {
+    "github": "https://github.com/TrustNTE/TrustNTE/releases/download/v{version}/TrustNTE_v{version}.zip"
+  },
+  "sha256": {
+    "0.0.11": "4d5173d83886fb6ff90e69ccfd339631f852c615ba98831b3048831c49eac6c1"
+  }
+}

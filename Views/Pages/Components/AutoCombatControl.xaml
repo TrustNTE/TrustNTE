@@ -1,0 +1,158 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.Components.AutoCombatControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:helpers="clr-namespace:TrustNTE.Helpers"
+             xmlns:local="clr-namespace:TrustNTE.Views.Pages.Components">
+    <ui:CardExpander Margin="0,0,0,12" ContentPadding="0" Icon="{ui:SymbolIcon Flash24}" IsExpanded="False">
+        <ui:CardExpander.Header>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '自动战斗 (YOLO AI)'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '实时画面识别到怪物时自动锁定并释放技能'}" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,24,0" IsChecked="{Binding Config.AutoCombatEnabled}" VerticalAlignment="Center" />
+            </Grid>
+        </ui:CardExpander.Header>
+        <StackPanel>
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- AI 识别置信度 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans 'AI 识别置信度'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '检测怪物的阈值 (0.0 - 1.0)，越低越容易误判'}" />
+                </StackPanel>
+                <ui:NumberBox Grid.Column="1" Value="{Binding Config.AutoCombatConfidence, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+              SmallChange="0.1" Maximum="1.0" Minimum="0.0"
+              MaxDecimalPlaces="2" MinWidth="120" Margin="0,0,36,0" VerticalAlignment="Center"/>
+            </Grid>
+
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- 后台战斗模式 -->
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '后台战斗模式'}"/>
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                  Text="{helpers:Trans '战斗输入走后台驱动，不影响你的鼠标键盘。若战斗无响应请关闭'}"/>
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" VerticalAlignment="Center"
+                                 IsChecked="{Binding Config.CombatBackgroundMode}"/>
+            </Grid>
+            <!-- 脱战时间 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '脱战时间'}"/>
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                      Text="{helpers:Trans '敌人消失后等待多少秒才脱战。放技能特效会遮挡识别，太小容易误脱战'}"/>
+                </StackPanel>
+                <ui:NumberBox Grid.Column="1" Value="{Binding Config.LostCombatSeconds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+              SmallChange="0.5" Minimum="0.5" Maximum="10" MaxDecimalPlaces="1"
+              MinWidth="120" Margin="0,0,36,0" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- AI 推理引擎（下拉框） -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans 'AI 推理引擎'}"/>
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                  Text="{helpers:Trans 'GPU 更快但与游戏共用显卡；CPU 不抢游戏帧率。切换即刻生效'}"/>
+                </StackPanel>
+                <ComboBox Grid.Column="1" MinWidth="160" Margin="0,0,36,0" VerticalAlignment="Center"
+          SelectedIndex="{Binding YoloEngineIndex}">
+                    <ComboBoxItem Content="{helpers:Trans 'CPU'}"/>
+                    <ComboBoxItem Content="{helpers:Trans '显卡 (GPU)'}"/>
+                </ComboBox>
+            </Grid>
+
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- ═══════ 战斗策略区 ═══════ -->
+            <StackPanel Margin="16">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:TextBlock Grid.Column="0" Text="{helpers:Trans '策略配置'}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                    <ui:Button Grid.Column="1" Content="{helpers:Trans '导入'}" Command="{Binding ImportStrategyCommand}"/>
+                    <ui:Button Grid.Column="2" Content="{helpers:Trans '导出'}" Command="{Binding ExportStrategyCommand}" Margin="8,0,0,0"/>
+                    <ui:Button Grid.Column="3" Content="{helpers:Trans '保存至本地'}" Appearance="Primary" Command="{Binding SaveStrategyCommand}" Margin="16,0,0,0"/>
+                    <ui:TextBox Grid.Column="4" Text="{Binding StrategyName, UpdateSourceTrigger=PropertyChanged}" Margin="16,0,36,0"
+                                PlaceholderText="{helpers:Trans '输入策略名（如：创生队）'}"/>
+                </Grid>
+                <ui:TextBlock Text="{Binding StrategyStatus}" FontTypography="Caption"
+                              Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Margin="0,6,36,0"/>
+
+                <!-- 4个角色槽位 -->
+                <Grid Margin="0,12,36,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <local:CharacterSlotPicker x:Name="P1" Grid.Column="0" Tag="1" Margin="0,0,4,0" SelectedCharacter="{Binding TeamSlot1}" Committed="SlotPicker_Committed"/>
+                    <local:CharacterSlotPicker x:Name="P2" Grid.Column="1" Tag="2" Margin="4,0"        SelectedCharacter="{Binding TeamSlot2}" Committed="SlotPicker_Committed"/>
+                    <local:CharacterSlotPicker x:Name="P3" Grid.Column="2" Tag="3" Margin="4,0"        SelectedCharacter="{Binding TeamSlot3}" Committed="SlotPicker_Committed"/>
+                    <local:CharacterSlotPicker x:Name="P4" Grid.Column="3" Tag="4" Margin="4,0,0,0"   SelectedCharacter="{Binding TeamSlot4}" Committed="SlotPicker_Committed"/>
+                </Grid>
+            </StackPanel>
+            <!-- ═══════════════════════════════ -->
+
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- 使用终结技 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '使用终结技'}" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" IsChecked="{Binding Config.AutoCombatUseUltimate}" VerticalAlignment="Center" />
+            </Grid>
+
+            <Separator Margin="-18,0" BorderThickness="0,1,0,0" />
+
+            <!-- 视觉调试 -->
+            <Grid Margin="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '视觉调试 (YOLO 视角)'}" />
+                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '打开实时识别画面，查看 AI 是否成功锁定了怪物'}" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,36,0" IsChecked="{Binding Config.IsCombatDebugWindowOpen}" VerticalAlignment="Center" />
+            </Grid>
+        </StackPanel>
+    </ui:CardExpander>
+</UserControl>

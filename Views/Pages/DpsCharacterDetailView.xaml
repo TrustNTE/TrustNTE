@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="TrustNTE.Views.Pages.DpsCharacterDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="DpsAnalysisPageResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Margin="24,10,24,8">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="◀ 返回采集中" Style="{StaticResource NeoBtn}" Command="{Binding BackToLiveCommand}"/>
+                <Border Style="{StaticResource AttrRing}" Margin="14,0,0,0" ClipToBounds="True" DataContext="{Binding Detail}">
+                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource AvatarTpl}"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                    <StackPanel Orientation="Horizontal" DataContext="{Binding Detail}">
+                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Bold" Foreground="#E8E8F0"/>
+                        <Border Background="#0F0F1A" BorderThickness="1" BorderBrush="#2A2A40" CornerRadius="2" Margin="8,0,0,0" Padding="5,0">
+                            <TextBlock Text="{Binding Attribute}" FontSize="9" Style="{StaticResource AttrText}"/>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" DataContext="{Binding Detail}" Margin="0,3,0,0">
+                        <TextBlock Text="累计伤害 " FontSize="10" Foreground="#8A8AA0"/>
+                        <TextBlock Text="{Binding TotalStr}" FontSize="10" Foreground="#FFE600" FontFamily="Cascadia Mono, Consolas"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <Border Grid.Row="1" Style="{StaticResource Card}" Margin="24,0,24,10" MaxHeight="230">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource SecTitle}">
+                    <Run Foreground="#E8E8F0">技能聚合</Run><Run Foreground="#00F0FF"> SKILLS</Run><Run> · Q / E / 环合 / 追击</Run>
+                </TextBlock>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding DetailSkills}" ItemTemplate="{StaticResource SkillRowTpl}"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" Style="{StaticResource Card}" Margin="24,0,24,14">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Style="{StaticResource SecTitle}">
+                    <Run Foreground="#E8E8F0">逐击明细</Run><Run Foreground="#00F0FF"> AXIS</Run>
+                </TextBlock>
+                <ListView Grid.Row="1" ItemsSource="{Binding AxisRows}" Background="Transparent"
+                          BorderThickness="0" Foreground="#C8CCD8" FontSize="12">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="时间" DisplayMemberBinding="{Binding TimeStr}" Width="100"/>
+                            <GridViewColumn Header="类型" DisplayMemberBinding="{Binding TypeStr}" Width="110"/>
+                            <GridViewColumn Header="伤害" DisplayMemberBinding="{Binding DamageStr}" Width="140"/>
+                            <GridViewColumn Header="目标" DisplayMemberBinding="{Binding TargetStr}" Width="240"/>
+                        </GridView>
+                    </ListView.View>
+                    <ListView.Resources>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Background" Value="#161628"/>
+                            <Setter Property="Foreground" Value="#00F0FF"/>
+                            <Setter Property="BorderBrush" Value="#2A2A40"/>
+                            <Setter Property="Padding" Value="8,6"/>
+                        </Style>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Padding" Value="4,3"/>
+                            <Setter Property="BorderBrush" Value="#1E1E30"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                        </Style>
+                    </ListView.Resources>
+                </ListView>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
