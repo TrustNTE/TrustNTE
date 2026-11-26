@@ -9,7 +9,7 @@ using TrustNTE.ViewModels;
 using TrustNTE.Views.Controls;
 using Wpf.Ui.Controls;
 
-// ★ 别名：GlobalUsings 引入了 WinForms，RadioButton 撞名
+// 别名：GlobalUsings 引入了 WinForms，RadioButton 撞名
 using RadioButton = System.Windows.Controls.RadioButton;
 
 namespace TrustNTE.Views
@@ -17,10 +17,8 @@ namespace TrustNTE.Views
     public partial class LogWindow : FluentWindow
     {
         private readonly LogWindowViewModel _viewModel;
-        private readonly IConfigService _configService =
-            App.ServiceProvider.GetRequiredService<IConfigService>();
-        private readonly ILogService _logService =
-            App.ServiceProvider.GetRequiredService<ILogService>();
+        private readonly IConfigService _configService = App.ServiceProvider.GetRequiredService<IConfigService>();
+        private readonly ILogService _logService = App.ServiceProvider.GetRequiredService<ILogService>();
 
         public LogWindow(LogWindowViewModel viewModel)
         {
@@ -48,23 +46,31 @@ namespace TrustNTE.Views
             MainConsole.Clear();
         }
 
-        // ★ 复制 = 窗口缓冲全量（共享集合只有 200 条，窗口缓冲 2000 条）
+        // 复制 = 窗口缓冲全量（共享集合只有 200 条，窗口缓冲 2000 条）
         private void CopyButton_Click(object sender, RoutedEventArgs e)
             => _viewModel.ShowCopyFeedback(MainConsole.CopyAllBuffered());
 
         private void Chip_Checked(object sender, RoutedEventArgs e)
         {
-            if (MainConsole == null) return; // XAML 解析期"全部"默认 Checked 会提前触发
-            if (sender is RadioButton rb && rb.Tag is string s
-                && Enum.TryParse<LogEntryLevel>(s, out var lvl))
-                MainConsole.ApplyMinLevel(lvl);
+            if (MainConsole == null) return;
+            // XAML 解析期"全部"默认 Checked 会提前触发
+            if (sender is RadioButton rb && rb.Tag is string s)
+            {
+                // ★ DEBUG专用chip：Tag=DebugOnly → 只看DEBUG级条目
+                if (s == "DebugOnly")
+                {
+                    MainConsole.ApplyMinLevel(LogEntryLevel.Debug, debugOnly: true);
+                    return;
+                }
+                if (Enum.TryParse<LogEntryLevel>(s, out var lvl))
+                    MainConsole.ApplyMinLevel(lvl);
+            }
         }
 
         private void DevToggle_Changed(object sender, RoutedEventArgs e)
         {
             if (MainConsole == null) return;
             bool on = DevToggle.IsChecked == true;
-
             var cfg = _configService.Load();
             if (cfg.IsDeveloperMode != on)
             {

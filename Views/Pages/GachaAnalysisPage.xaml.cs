@@ -16,7 +16,7 @@ namespace TrustNTE.Views.Pages
 
         /// <summary>
         /// Npcap 官方下载链接：只允许跳外部默认浏览器。
-        /// ★ 必须先 e.Handled = true 掐断 Hyperlink 默认行为——
+        ///    必须先 e.Handled = true 掐断 Hyperlink 默认行为——
         ///   否则 NavigationView 内部 Frame 会就地加载网页（IE 内核渲染 + 脚本错误弹窗）。
         /// </summary>
         private void OnNpcapLink_Click(object sender, RequestNavigateEventArgs e)

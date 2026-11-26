@@ -23,8 +23,8 @@ namespace TrustNTE.Services
             Directory.Exists(Dir)
                 ? Directory.GetFiles(Dir, "*.json")
                     .Select(Path.GetFileNameWithoutExtension)
-                    .Where(n => !string.IsNullOrWhiteSpace(n))   // ★ 空名过滤（顺带挡占位垃圾文件名）
-                    .Select(n => n!)                             // ★ 空性豁免，消 CS8619
+                    .Where(n => !string.IsNullOrWhiteSpace(n))   //    空名过滤（顺带挡占位垃圾文件名）
+                    .Select(n => n!)                             //    空性豁免，消 CS8619
                     .OrderBy(n => n).ToList()
                 : new List<string>();
 

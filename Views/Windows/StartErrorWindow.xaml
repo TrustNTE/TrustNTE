@@ -21,7 +21,7 @@
             </ui:TitleBar.Icon>
         </ui:TitleBar>
 
-        <!-- 内容区：改为居中排版 -->
+        <!-- 内容区：  居中排版 -->
         <StackPanel Grid.Row="1" Margin="32,20,32,20" VerticalAlignment="Center" HorizontalAlignment="Center">
 
             <!--        换成了更有威慑力的警告三角图标，颜色用了系统红 -->

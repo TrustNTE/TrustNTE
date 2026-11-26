@@ -155,7 +155,7 @@ namespace TrustNTE.Services.Combat
                     var r = _engine.Evaluate($"(async()=>{{\n{body}\n}})()");
                     if (r is Task t) t.Wait();
                 }
-                // ★ 子类必须在基类之前：ClearScript 的 ScriptInterruptedException
+                //    子类必须在基类之前：ClearScript 的 ScriptInterruptedException
                 //   继承自 OperationCanceledException，顺序反了报 CS0160
                 catch (ScriptInterruptedException) { }
                 catch (OperationCanceledException) { }

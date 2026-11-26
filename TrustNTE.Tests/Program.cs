@@ -1,29 +1,48 @@
 ﻿using System;
 using System.Text;
 using OpenCvSharp;
+using TrustNTE.Tests.Core;
 using TrustNTE.Tests.DebugTools;
+using TrustNTE.Tests.Tools.ActivityProgress;
+using TrustNTE.Tests.Tools.QEnergy;
 
 namespace TrustNTE.Tests
 {
     public class Program
     {
+        // ═══════════ 工具注册表：新增工具 = 在这里加一行 ═══════════
+        private static readonly IDebugTool[] Tools =
+        {
+            new QEnergyTool(),      // Q 能量检测
+            new ActivityTool(),     // 活跃度进度条检测
+            new ActivityClaimClicker(), //活跃度执行情况
+            // new XxxTool(),       // ← 以后新工具在这里加一行
+        };
+
         [STAThread]
         public static void Main(string[] args)
         {
-            //        核心   ：强制控制台使用 UTF-8 编码，解决 Emoji 和状态字符乱码
+            // 强制控制台使用 UTF-8 编码，解决 Emoji 和状态字符乱码
             Console.OutputEncoding = Encoding.UTF8;
 
             Console.WriteLine("========================================");
-            Console.WriteLine("  Q 能量 绝对亮度检测 v5 (最终版)");
+            Console.WriteLine("  TrustNTE 调试工具集");
             Console.WriteLine("========================================");
-            Console.WriteLine(" [1] 实时检测 (读取本地已保存的 ROI)");
-            Console.WriteLine(" [2] 重新标定 ROI (全屏拖框)");
+            for (int i = 0; i < Tools.Length; i++)
+                Console.WriteLine($" [{i + 1}] {Tools[i].Name,-16} {Tools[i].Description}");
+            Console.WriteLine(" [0] 退出");
             Console.WriteLine("========================================");
             Console.Write("请输入编号: ");
-            
-            string? input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input)) input = "1";
 
+            string? input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input) || input == "0") return;
+            if (!int.TryParse(input, out int idx) || idx < 1 || idx > Tools.Length)
+            {
+                Console.WriteLine("无效编号。");
+                return;
+            }
+
+            // 统一启动截图无人机，传给工具
             using var drone = new TestCaptureDrone();
             if (!drone.BindAndStart(50))
             {
@@ -31,60 +50,18 @@ namespace TrustNTE.Tests
                 return;
             }
 
-            QEnergyRoiCalibrator.GrabNormalizedFrame = () => drone.GetLatestFrame();
-
-            if (input == "2")
+            try
             {
-                QEnergyRoiCalibrator.Run();
-                return;
+                Tools[idx - 1].Run(drone);
             }
-
-            //        既然文件可能被旧值覆盖，实时检测时直接硬编码正确的坐标和阈值，防污染
-            var config = new QEnergyConfig
+            catch (Exception ex)
             {
-                RoiX = 1767,
-                RoiY = 915,
-                RoiWidth = 111,
-                RoiHeight = 111,
-                BrightReadyRatio = 0.15 // 门槛定死 15%
-            };
-
-            using var detector = new QEnergyDetector(config);
-
-            Console.WriteLine("按 ESC 键退出预览。");
-
-            while (true)
-            {
-                using var frame = drone.GetLatestFrame();
-                if (frame != null)
-                {
-                    var result = detector.Analyze(frame);
-                    var roi = detector.LastRoi;
-                    
-                    Cv2.Rectangle(frame, roi, Scalar.Red, 2);
-                    
-                    using var roiMat = new Mat(frame, roi);
-                    using var maskMat = detector.SnapshotLastMask();
-
-                    using var roiBig = new Mat();
-                    using var maskBig = new Mat();
-                    Cv2.Resize(roiMat, roiBig, new Size(roiMat.Width * 3, roiMat.Height * 3));
-                    if (maskMat != null) Cv2.Resize(maskMat, maskBig, new Size(maskMat.Width * 3, maskMat.Height * 3));
-
-                    string state = result.Confirmed ? "✔ 满能量" : "✘ 未满";
-                    Console.Write($"\r亮度占比: {result.BrightRatio,6:P1} | 状态: {state}          ");
-
-                    using var preview = new Mat();
-                    Cv2.Resize(frame, preview, new Size(1280, 720));
-                    Cv2.ImShow("Game Preview", preview);
-                    Cv2.ImShow("Q ROI (放大3倍)", roiBig);
-                    if (maskMat != null) Cv2.ImShow("Q Bright Mask", maskBig);
-                }
-
-                if (Cv2.WaitKey(10) == 27) break;
+                Console.WriteLine($"\n工具执行异常: {ex.Message}");
             }
-
-            Cv2.DestroyAllWindows();
+            finally
+            {
+                Cv2.DestroyAllWindows();
+            }
         }
     }
 }

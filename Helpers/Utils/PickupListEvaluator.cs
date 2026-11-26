@@ -24,7 +24,7 @@ namespace TrustNTE.Helpers
             return new string(buf, 0, n).Trim();
         }
 
-        // ★ string? ：配置字段可能为 null，消 CS8604
+        //    string? ：配置字段可能为 null，消 CS8604
         public static List<string> ParseLines(string? multiLineText)
             => (multiLineText ?? string.Empty)
                .Split(new[] { '\r', '\n', '，', ',', '、' }, StringSplitOptions.RemoveEmptyEntries)

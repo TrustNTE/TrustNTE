@@ -450,7 +450,7 @@ namespace TrustNTE.Services
 
         private static string Names(TaskRuntimeRegistry.ITaskRuntime[] ts) => string.Join("、", ts.Select(t => t.TaskName));
         // █████████████████████████████████████████████████████████████████
-        // 架构例外：此方法有意绕过 IInputRouter，禁止改为 _router.ClickWith()。
+        // 架构例外：此方法有意绕过 IInputRouter，禁止   _router.ClickWith()。
         // 
         // 原因：UE5/Qt 启动器窗口在更新/开始游戏阶段受前台锁保护，
         //       必须使用 AttachThreadInput + SetForegroundWindow + FakeForeground

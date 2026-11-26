@@ -59,7 +59,7 @@ namespace TrustNTE.Models
         public Action<object?, EventArgs>? OnKeyDownAction { get; set; }
 
         /// <summary>
-        /// ★ 新增：长按功能松开时的动作（仅 IsHold=true 的项使用）
+        ///    新增：长按功能松开时的动作（仅 IsHold=true 的项使用）
         /// </summary>
         public Action? OnKeyReleasedAction { get; set; }
 
@@ -73,7 +73,7 @@ namespace TrustNTE.Models
             _ => "无"
         };
 
-        // ================= ★ 大牛 XAML 需要的计算属性 =================
+        // =================    大牛 XAML 需要的计算属性 =================
 
         /// <summary>
         /// 长按类功能名显示"（长按生效）"后缀
@@ -113,7 +113,7 @@ namespace TrustNTE.Models
         }
 
         /// <summary>
-        /// ★ 核心补丁：当 HotKeyType 发生变化时，强制通知 UI 刷新 HotKeyTypeName（按钮文字）
+        ///    核心补丁：当 HotKeyType 发生变化时，强制通知 UI 刷新 HotKeyTypeName（按钮文字）
         /// </summary>
         partial void OnHotKeyTypeChanged(HotKeyTypeEnum value)
         {

@@ -154,7 +154,7 @@ namespace TrustNTE.ViewModels.Pages
             }
         }
 
-        /// <summary>S级出货列表：当前选中池按时间正序遍历，相邻两个5★之间的抽数即该条的「N 抽」。</summary>
+        /// <summary>S级出货列表：当前选中池按时间正序遍历，相邻两个5  之间的抽数即该条的「N 抽」。</summary>
         private void RebuildSRankDrops()
         {
             SRankDrops.Clear();
@@ -219,7 +219,7 @@ namespace TrustNTE.ViewModels.Pages
             catch (OperationCanceledException) { }
             catch (Exception ex)
             {
-                // ★ 启动失败立即弹回风险层，错误显示在启动按钮下方
+                //    启动失败立即弹回风险层，错误显示在启动按钮下方
                 EngineTag = "引擎待机";
                 StatusText = ex.Message;
                 IsWorking = false;
@@ -233,7 +233,7 @@ namespace TrustNTE.ViewModels.Pages
             try { await _captureService.StopAsync(); } catch { }
             _sessionCts?.Cancel();
             EngineTag = "引擎已停止";
-            IsWorking = false;   // ★ 返回风险层（启动按钮在此层）
+            IsWorking = false;   //    返回风险层（启动按钮在此层）
             StatusText = "";
             _logService.LogInfo($"[抽卡] 会话已停止 · 记录 {Records.Count} 条");
         }

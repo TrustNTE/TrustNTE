@@ -15,7 +15,7 @@ namespace TrustNTE.Services
 {
     /// <summary>
     /// 配置组读写（同步原子写）。本文件含两个类：SchedulerGroupService（存储）+ SchedulerService（执行引擎）。
-    /// ★ 脚本目录已迁移到 UserData\Scripts（与 JsScriptViewModel / ScriptEngineService 三处同路径）。
+    ///    脚本目录已迁移到 UserData\Scripts（与 JsScriptViewModel / ScriptEngineService 三处同路径）。
     /// </summary>
     public static class SchedulerGroupService
     {
@@ -27,7 +27,7 @@ namespace TrustNTE.Services
 
         public static string Dir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData", "Scheduler");
 
-        /// <summary>★ 脚本目录（UserData\Scripts）。</summary>
+        /// <summary>   脚本目录（UserData\Scripts）。</summary>
         public static string ScriptsDir => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData", "Scripts");
 
         public static IReadOnlyList<SchedulerGroupDoc> List() =>

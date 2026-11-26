@@ -60,7 +60,7 @@ namespace TrustNTE.ViewModels.Pages
             if (SelectedStrategyName == null) { StrategyStatus = "先选择要删除的策略"; return; }
             StrategyService.Delete(SelectedStrategyName);
             StrategyNames.Remove(SelectedStrategyName);
-            // ★ 删除的是当前生效策略 → 清空绑定，热载直接回默认（否则引擎走"加载失败"弯路）
+            //    删除的是当前生效策略 → 清空绑定，热载直接回默认（否则引擎走"加载失败"弯路）
             if (Config.AutoCombatStrategyName == SelectedStrategyName)
                 Config.AutoCombatStrategyName = "";
             SelectedStrategyName = StrategyNames.FirstOrDefault();

@@ -56,7 +56,7 @@ namespace TrustNTE.Services.Triggers
         {
             _log = log;
             _cfg = LoadConfig();
-            // ★ 修复点：环形带遮罩必须在构造时按 ROI 尺寸分配实体。
+            //    修复点：环形带遮罩必须在构造时按 ROI 尺寸分配实体。
             //   空壳 Mat 上 SetTo/Circle 是静默无操作，BitwiseAnd 会因尺寸不符炸出
             //   "The operation is neither 'array op array'..." —— Tests 工具原有此分配，重建时不可丢。
             _ringBand = new Mat(_cfg.RoiHeight, _cfg.RoiWidth, MatType.CV_8UC1);

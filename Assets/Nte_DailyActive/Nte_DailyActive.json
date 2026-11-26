@@ -1,0 +1,68 @@
+{
+    "Nte_GetItem": {
+        "x": 0,
+        "y": 31,
+        "w": 90,
+        "h": 24,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_DailyActivityReachUpperLimit": {
+        "x": 0,
+        "y": 0,
+        "w": 213,
+        "h": 21,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_Completed": {
+        "x": 0,
+        "y": 65,
+        "w": 39,
+        "h": 36,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_ActivityLevelClaim": {
+        "x": 100,
+        "y": 31,
+        "w": 49,
+        "h": 23,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_ActivityLevel": {
+        "x": 0,
+        "y": 111,
+        "w": 26,
+        "h": 26,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    },
+    "Nte_F1DailyRewardStartButton": {
+        "x": 159,
+        "y": 31,
+        "w": 22,
+        "h": 22,
+        "ox": 0,
+        "oy": 0,
+        "points": {
+            
+        }
+    }
+}

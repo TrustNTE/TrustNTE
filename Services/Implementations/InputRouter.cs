@@ -18,7 +18,7 @@ namespace TrustNTE.Services
         /// <summary>按住中的键 → 按下时所用驱动。[卡键防护] 核心状态。</summary>
         private readonly Dictionary<int, InputDriveType> _heldKeys = new();
 
-        /// <summary>★v1.4 按住中的鼠标键 → (按下时通道, 物理坐标)。[卡键防护] 核心状态。</summary>
+        /// <summary>  v1.4 按住中的鼠标键 → (按下时通道, 物理坐标)。[卡键防护] 核心状态。</summary>
         private readonly Dictionary<bool, (InputDriveType Drive, int Px, int Py)> _heldMouse = new();
 
         public InputRouter(
@@ -116,10 +116,10 @@ namespace TrustNTE.Services
             return (px, py);
         }
 
-        // ==================== ★v1.4 鼠标按住（重击/蓄力） ====================
+        // ====================   v1.4 鼠标按住（重击/蓄力） ====================
 
         /// <summary>
-        /// ★v1.4.2 按下鼠标（长按起点）。恢复按驱动路由（后台原语已根治：补齐 SetWindowPos/MOVE/Sleep 前置）：
+        ///   v1.4.2 按下鼠标（长按起点）。恢复按驱动路由（后台原语已根治：补齐 SetWindowPos/MOVE/Sleep 前置）：
         ///   · Background 左键：原生 SendLeftMouseDown（后台通道原生处理长按）；
         ///   · Background 右键：后台原语仅覆盖左键，降级走 Trick；
         ///   · Physical：无独立 Down/Up 原语，降级走 Trick（完整物理点击仍走 ClickWith 原路径）；
@@ -142,7 +142,7 @@ namespace TrustNTE.Services
             }
 
             var effective = drive;
-            switch (drive)   // ★先发送，成功后才入台账：发送失败绝不残留"按下未抬起"
+            switch (drive)   //   先发送，成功后才入台账：发送失败绝不残留"按下未抬起"
             {
                 case InputDriveType.Physical:
                     // 物理驱动无独立 Down/Up 原语 → 长按降级走 Trick
@@ -152,7 +152,7 @@ namespace TrustNTE.Services
                 case InputDriveType.Background:
                     if (isLeft)
                     {
-                        // ★v1.4.2 原生路径：SendLeftMouseDown 已补齐前置，与完整点击同权重
+                        //   v1.4.2 原生路径：SendLeftMouseDown 已补齐前置，与完整点击同权重
                         _inputService.SendLeftMouseDown(hwnd, px, py);
                     }
                     else
@@ -171,7 +171,7 @@ namespace TrustNTE.Services
             DebugCount(true);
 #endif
             lock (_heldMouse)
-                _heldMouse[isLeft] = (effective, px, py);   // ★记录实际通道，Up 自动对齐
+                _heldMouse[isLeft] = (effective, px, py);   //   记录实际通道，Up 自动对齐
         }
 
         /// <summary>抬起鼠标（长按终点）。按台账记录的通道与坐标发送；未按下时幂等返回。</summary>
@@ -185,7 +185,7 @@ namespace TrustNTE.Services
             MouseUpSend(hwnd, isLeft, state);
         }
 
-        /// <summary>★v1.4 按台账记录的通道发送抬起（私有，调用方持台账数据）。</summary>
+        /// <summary>  v1.4 按台账记录的通道发送抬起（私有，调用方持台账数据）。</summary>
         private void MouseUpSend(IntPtr hwnd, bool isLeft, (InputDriveType Drive, int Px, int Py) state)
         {
             switch (state.Drive)
@@ -298,7 +298,7 @@ namespace TrustNTE.Services
                 }
                 _heldKeys.Clear();
             }
-            lock (_heldMouse)   // ★v1.4 鼠标台账同批释放，⏹/退出时按住的左键必抬起
+            lock (_heldMouse)   //   v1.4 鼠标台账同批释放，⏹/退出时按住的左键必抬起
             {
                 foreach (var kv in _heldMouse)
                 {

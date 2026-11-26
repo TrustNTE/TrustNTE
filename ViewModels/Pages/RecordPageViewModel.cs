@@ -53,7 +53,7 @@ namespace TrustNTE.ViewModels.Pages
         [RelayCommand]
         private void OpenDirectory()
         {
-            //    改：路径改为 Data/Macros
+            //    改：路径   Data/Macros
             string dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Macros");
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
             _shellService.OpenFolder(dir);

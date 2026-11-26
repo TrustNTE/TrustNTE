@@ -92,7 +92,7 @@ namespace TrustNTE.Helpers.MiniMap
             CalculateMinDist(temp, minDist);
             using var lut = Mat.FromPixelData(1, 256, MatType.CV_8UC1, minDist);
             Cv2.LUT(_angle, lut, temp);
-            // [   复] CmpType 改为 CmpTypes
+            // [   复] CmpType    CmpTypes
             Cv2.Compare(_radius, temp, temp, CmpTypes.LT);
             using var temp1 = new Mat();
             Cv2.InRange(bgrMat, Scalar.All(100), Scalar.All(255), temp1);
@@ -105,7 +105,7 @@ namespace TrustNTE.Helpers.MiniMap
             using var cmin = new Mat();
             using var diff = new Mat();
             MaxMinChannels(bgrMat, cmax, cmin);
-            // [   复] CmpType 改为 CmpTypes
+            // [   复] CmpType    CmpTypes
             Cv2.Compare(cmax, cmin, _outMask, CmpTypes.EQ);
             Cv2.InRange(cmax, new Scalar(50), new Scalar(127), diff);
             Cv2.BitwiseAnd(diff, _outMask, _outMask);

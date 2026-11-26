@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TrustNTE.Models;
-using TrustNTE.ViewModels.Pages; // ★ 加上这个，用于 StartPageViewModel
+using TrustNTE.ViewModels.Pages; //    加上这个，用于 StartPageViewModel
 using TrustNTE.ViewModels.Pages.TaskModules;
 
 namespace TrustNTE.Services.Implementations
@@ -22,13 +22,13 @@ namespace TrustNTE.Services.Implementations
 
             // ── 启动控制 ──
             var ctl = new HotKeySettingModel("启动控制");
-            // ★ 接线 1：打开日志窗口
+            //    接线 1：打开日志窗口
             ctl.Children.Add(Item("OpenLog", "打开日志", () =>
                 _dispatcherService.BeginInvoke(() => LazyGet<StartPageViewModel>().OpenLogWindowCommand.Execute(null))));
-            // ★ 接线 2：打开遮罩日志
+            //    接线 2：打开遮罩日志
             ctl.Children.Add(Item("OpenMaskLog", "打开遮罩日志", () =>
                 _dispatcherService.BeginInvoke(() => LazyGet<StartPageViewModel>().ToggleMaskCommand.Execute(null))));
-            // ★ 接线 3：打开预览窗口
+            //    接线 3：打开预览窗口
             ctl.Children.Add(Item("OpenPreview", "打开预览窗口", () =>
                 _dispatcherService.BeginInvoke(() => LazyGet<StartPageViewModel>().TogglePreviewWindowCommand.Execute(null))));
             HotKeys.Add(ctl);

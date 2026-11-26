@@ -15,7 +15,7 @@ namespace TrustNTE.Services.Triggers
     public class MonthlyCardTrigger : ITaskTrigger
     {
         public string Name => "月卡领取";
-        // ★ Guardian：钓鱼 7x24 时 Dispatch 不再静默本触发器（弹窗不点掉，钓鱼模板全瞎）
+        //    Guardian：钓鱼 7x24 时 Dispatch 不再静默本触发器（弹窗不点掉，钓鱼模板全瞎）
         public TriggerClass Class => TriggerClass.Guardian;
         public bool IsEnabled { get; set; } = true;
 

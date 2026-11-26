@@ -36,14 +36,14 @@ namespace TrustNTE.Update
         {
             string text = ActionBtn.Content?.ToString() ?? "";
 
-            // ★ 防呆：没参数直接双击打开的，点击直接退出
+            //    防呆：没参数直接双击打开的，点击直接退出
             if (text == "关 闭")
             {
                 System.Windows.Application.Current.Shutdown();
                 return;
             }
 
-            // ★ 更新失败后的兜底：按钮变成"启 动"，直接启动主程序（原代码这个按钮点了没反应，顺手修了）
+            //    更新失败后的兜底：按钮变成"启 动"，直接启动主程序（原代码这个按钮点了没反应，顺手修了）
             if (text == "启 动")
             {
                 LaunchMainApp();
@@ -59,7 +59,7 @@ namespace TrustNTE.Update
 
             _isUpdating = true;
             ActionBtn.IsEnabled = false;
-            ActionBtn.Visibility = Visibility.Collapsed;    // ★ 下载中隐藏底部按钮（解决灰按钮挂着的问题）
+            ActionBtn.Visibility = Visibility.Collapsed;    //    下载中隐藏底部按钮（解决灰按钮挂着的问题）
             SourcePanel.Visibility = Visibility.Collapsed;
             DownloadProgress.Visibility = Visibility.Visible;
 
@@ -71,7 +71,7 @@ namespace TrustNTE.Update
                 _updateFailed = true;
                 DownloadProgress.Visibility = Visibility.Collapsed;
                 ActionBtn.Content = "启 动";
-                ActionBtn.Visibility = Visibility.Visible;  // ★ 失败兜底：还能手动启动主程序
+                ActionBtn.Visibility = Visibility.Visible;  //    失败兜底：还能手动启动主程序
                 ActionBtn.IsEnabled = true;
             }
         }
@@ -109,7 +109,7 @@ namespace TrustNTE.Update
             Dispatcher.Invoke(() => DownloadProgress.Value = value);
         }
 
-        // ★ 完成态：下载+替换成功后由 Program.cs 调用，显示"启动/退出"让玩家自己决定
+        //    完成态：下载+替换成功后由 Program.cs 调用，显示"启动/退出"让玩家自己决定
         public void ShowDoneState(bool updated, string? version = null)
         {
             StatusText.Visibility = Visibility.Collapsed;

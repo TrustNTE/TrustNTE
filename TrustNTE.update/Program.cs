@@ -14,7 +14,7 @@ namespace TrustNTE.Update
 {
     class Program
     {
-        // ★修改① TrustNTE.update.exe 已移出跳过名单：更新包里的新版更新器会随包装入（自我更新）
+        //   修改① TrustNTE.update.exe 已移出跳过名单：更新包里的新版更新器会随包装入（自我更新）
         private static readonly string[] SkipFileNames =
         {
             "config.json",
@@ -48,7 +48,7 @@ namespace TrustNTE.Update
                 return;
             }
 
-            // ★修改② 清理上一轮自我更新留下的旧更新器（此时旧进程已退出，可安全删除）
+            //   修改② 清理上一轮自我更新留下的旧更新器（此时旧进程已退出，可安全删除）
             try { File.Delete(Path.Combine(AppContext.BaseDirectory, UpdaterOldName)); } catch { }
 
             Log("Updater 启动。参数：" + string.Join(" ", args));
@@ -148,7 +148,7 @@ namespace TrustNTE.Update
 
                 try { Directory.Delete(tempRoot, true); } catch { }
 
-                // ★修改③ 不再自动拉起主程序 —— 显示完成页，由玩家自己决定启动还是退出
+                //   修改③ 不再自动拉起主程序 —— 显示完成页，由玩家自己决定启动还是退出
                 win.UpdateStatus("更新完成");
                 win.UpdateProgress(100);
                 win.ShowDoneState(updated: true);
@@ -281,7 +281,7 @@ namespace TrustNTE.Update
                     string? dir = Path.GetDirectoryName(dstFile);
                     if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
 
-                    // ★修改④ 自我更新：运行中的更新器不能被覆盖，但可以先改名腾位子
+                    //   修改④ 自我更新：运行中的更新器不能被覆盖，但可以先改名腾位子
                     if (string.Equals(fileName, UpdaterExeName, StringComparison.OrdinalIgnoreCase) && File.Exists(dstFile))
                     {
                         string oldSelf = Path.Combine(dstDir, UpdaterOldName);
@@ -343,7 +343,7 @@ namespace TrustNTE.Update
             }
         }
 
-        // ★修改⑤ 保留方法但不再被自动调用（完成页"启动 TrustNTE"按钮接管启动职责）
+        //   修改⑤ 保留方法但不再被自动调用（完成页"启动 TrustNTE"按钮接管启动职责）
         public static void RestartMain()
         {
             var mainExe = Path.Combine(AppContext.BaseDirectory, "TrustNTE.exe");

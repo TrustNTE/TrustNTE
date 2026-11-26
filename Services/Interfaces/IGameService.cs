@@ -25,7 +25,7 @@ namespace TrustNTE.Services.Interfaces
 
         (Mat? Frame, DateTime ShotAt) GetLatestFrameWithTimestamp();
 
-        // =========        修改为新的“接管/归还”名称 =========
+        // =========        修  新的“接管/归还”名称 =========
 
         /// <summary>
         /// 主循环每帧同步全局配置

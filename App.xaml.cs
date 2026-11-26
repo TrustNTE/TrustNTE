@@ -136,6 +136,9 @@ namespace TrustNTE
                 services.AddSingleton<NteRenderContextManager>();
                 services.AddSingleton<ICoordinateMapper, CoordinateMapper>();
 
+                //每日活跃度
+                services.AddSingleton<TrustNTE.Services.Triggers.DailyActiveTrigger>();
+
 
                 // ── 工具箱 ──
                 services.AddSingleton<TrustNTE.Services.Toolkit.DevToolsWindowService>();
@@ -232,7 +235,7 @@ namespace TrustNTE
 
                 laneCoordinator.Bind(scheduler);
                 automationSvc.Triggers.ExtraBusyCheck = () => scheduler.IsRunning;
-                //     补丁 B：注入断线时的清场钩子
+                //注入断线时的清场钩子
                 automationSvc.Supervisor.OnLanesStop = () => scheduler.Stop();
 
                 var configService = ServiceProvider.GetRequiredService<IConfigService>();

@@ -35,7 +35,7 @@ namespace TrustNTE.Services.Interfaces
         /// <param name="defaultName">默认文件名。</param>
         /// <param name="initialDir">初始目录，为 null 或空时使用系统默认目录。</param>
         /// <returns>用户选择的完整文件路径；取消则返回 null。</returns>
-        // initialDir 参数改为可选，供 DispatcherPageViewModel 导出分组时不强制指定目录使用；
+        // initialDir 参数  可选，供 DispatcherPageViewModel 导出分组时不强制指定目录使用；
         string? PickSaveFile(string filter, string defaultName, string? initialDir = null);
 
         /// <summary>

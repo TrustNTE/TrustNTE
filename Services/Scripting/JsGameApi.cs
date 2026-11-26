@@ -28,7 +28,7 @@ namespace TrustNTE.Services.Scripting
         public Func<InputDriveType> DriveProvider = () => InputDriveType.Trick;
         public InputDriveType RouterDrive => _router.CurrentDrive;
 
-        /// <summary>★v1.4 ⏹ 停止信号：引擎每次执行脚本时接线（见 ScriptEngineService）。
+        /// <summary>  v1.4 ⏹ 停止信号：引擎每次执行脚本时接线（见 ScriptEngineService）。
         /// AttackHold 的分片等待据此立即抬起。</summary>
         public Func<bool> StopRequested = () => false;
 
@@ -91,7 +91,7 @@ namespace TrustNTE.Services.Scripting
         /// <summary>中心平A（960,540）。</summary>
         public void Attack() => Click(960, 540);
 
-        /// <summary>★v1.4 重击/蓄力：真·按住鼠标左键 holdMs 毫秒（50~30000）后抬起。
+        /// <summary>  v1.4 重击/蓄力：真·按住鼠标左键 holdMs 毫秒（50~30000）后抬起。
         /// 与 Attack() 的瞬时点击不同，本方法按下后持续保持。
         /// ⏹ ~50ms 内立即抬起；异常/超时 finally 必抬起；脚本结束时 ReleaseAllHeldKeys 二次兜底。</summary>
         public void AttackHold(int holdMs)
@@ -128,7 +128,7 @@ namespace TrustNTE.Services.Scripting
             _router.KeyPressWith(DriveProvider(), Hwnd, SwitchKeys[_switchIndex], 50);
         }
 
-        /// <summary>★改动1(v1.3)：批量释放所有按住的键。脚本停止/超时时由引擎调用，防 WASD 卡键。</summary>
+        /// <summary>  改动1(v1.3)：批量释放所有按住的键。脚本停止/超时时由引擎调用，防 WASD 卡键。</summary>
         public void ReleaseHeldKeys()
         {
             var h = Hwnd;

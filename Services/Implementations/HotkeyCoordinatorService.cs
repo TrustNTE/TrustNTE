@@ -47,7 +47,7 @@ namespace TrustNTE.Services.Implementations
             Config = _configService.Load();
             if (Config.HotKeyConfig == null) Config.HotKeyConfig = new HotKeyConfig();
 
-            // ★ 录入闸门：录入框聚焦期间挂起/恢复全局热键注册
+            //    录入闸门：录入框聚焦期间挂起/恢复全局热键注册
             HotKeyCaptureGate.Started += SuspendGlobalForCapture;
             HotKeyCaptureGate.Ended += ResumeGlobalAfterCapture;
 
@@ -64,7 +64,7 @@ namespace TrustNTE.Services.Implementations
             var list = GetAllNonDirectoryHotkey(HotKeys);
             foreach (var model in list)
             {
-                // ★ 老配置残留纠正：长按功能不允许全局热键（历史配置里可能是 GlobalRegister）
+                //    老配置残留纠正：长按功能不允许全局热键（历史配置里可能是 GlobalRegister）
                 if (!model.AllowGlobal && model.HotKeyType == HotKeyTypeEnum.GlobalRegister)
                 {
                     model.HotKeyType = HotKeyTypeEnum.KeyboardMonitor;
@@ -93,7 +93,7 @@ namespace TrustNTE.Services.Implementations
                             UpdateHotKeyConfig(m);
                             _acceptedHotKeys[m.ConfigPropertyName] = newHotKey;
 
-                            // ★ 后绑获胜：无条件立即抢占（不再被弹窗劫持）
+                            //    后绑获胜：无条件立即抢占（不再被弹窗劫持）
                             var victim = RemoveDuplicateHotKey(m);
 
                             // 游戏键提醒：只是提醒，不阻塞绑定
@@ -140,7 +140,7 @@ namespace TrustNTE.Services.Implementations
 
             var key = KeyInterop.KeyFromVirtualKey(it.Key);
 
-            // ★ 历史垃圾键（如 Alt 单按录成的 System）不恢复，并从配置中自清理
+            //    历史垃圾键（如 Alt 单按录成的 System）不恢复，并从配置中自清理
             if (key is Key.None or Key.System or Key.Tab or Key.ImeProcessed or Key.DeadCharProcessed)
             {
                 Config.HotKeySettings.Remove(m.ConfigPropertyName);
@@ -155,7 +155,7 @@ namespace TrustNTE.Services.Implementations
 
         private void OnGlobalKeyPressed(HotKey pressedHotKey)
         {
-            if (HotKeyCaptureGate.IsCapturing) return;   // ★ 录入中不触发任何功能
+            if (HotKeyCaptureGate.IsCapturing) return;   //    录入中不触发任何功能
 
             var list = GetAllNonDirectoryHotkey(HotKeys);
             foreach (var m in list)
@@ -170,7 +170,7 @@ namespace TrustNTE.Services.Implementations
 
         private void OnGlobalKeyReleased(HotKey releasedHotKey)
         {
-            if (HotKeyCaptureGate.IsCapturing) return;   // ★ 同上
+            if (HotKeyCaptureGate.IsCapturing) return;   //    同上
 
             var list = GetAllNonDirectoryHotkey(HotKeys);
             foreach (var m in list)

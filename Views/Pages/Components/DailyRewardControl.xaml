@@ -3,19 +3,85 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:helpers="clr-namespace:TrustNTE.Helpers">
-    <ui:CardExpander Margin="0,0,0,12" ContentPadding="0" Icon="{ui:SymbolIcon Gift24}" IsExpanded="False">
-        <ui:CardExpander.Header>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                    <ui:TextBlock FontTypography="Body" Text="{helpers:Trans '自动领取每日奖励 / 一咖舍'}" />
-                    <ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '进入游戏后自动前往对应界面点击领取'}" />
-                </StackPanel>
-                <ui:ToggleSwitch Grid.Column="1" Margin="0,0,24,0" IsChecked="{Binding Config.DailyRewardEnabled}" VerticalAlignment="Center" />
-            </Grid>
-        </ui:CardExpander.Header>
-    </ui:CardExpander>
+	<ui:CardExpander Margin="0,0,0,12" ContentPadding="0" Icon="{ui:SymbolIcon Gift24}" IsExpanded="False">
+		<ui:CardExpander.Header>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ui:TextBlock FontTypography="Body" Text="{helpers:Trans '自动领取每日奖励 / 一咖舍'}" />
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '进入游戏后自动前往对应界面点击领取'}" />
+				</StackPanel>
+				<ui:ToggleSwitch Grid.Column="1" Margin="0,0,24,0" IsChecked="{Binding Config.DailyRewardEnabled}" VerticalAlignment="Center" />
+			</Grid>
+		</ui:CardExpander.Header>
+
+		<StackPanel Margin="24,4,24,12">
+
+			<!-- 0. 重置时间（玩家可选，默认5点） -->
+			<Grid Margin="0,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ui:TextBlock FontTypography="Body" Text="{helpers:Trans '0. 重置时间'}" />
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '每日奖励刷新时刻（24小时制，0-23），默认凌晨5点重置'}" />
+				</StackPanel>
+				<ui:NumberBox Grid.Column="1" Width="90" Margin="0,0,24,0"
+                              Value="{Binding Config.DailyResetHour}"
+                              Minimum="0" Maximum="23" SmallChange="1"
+                              SpinButtonPlacementMode="Compact"
+                              VerticalAlignment="Center" />
+			</Grid>
+
+			<!-- 1. 每日活跃度（已实现） -->
+			<Grid Margin="0,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ui:TextBlock FontTypography="Body" Text="{helpers:Trans '1. 每日活跃度'}" />
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '检测到F1每日奖励按钮后自动进入探索指南领取'}" />
+				</StackPanel>
+				<ui:ToggleSwitch Grid.Column="1" Margin="0,0,24,0" IsChecked="{Binding Config.DailyRewardEnabled}" VerticalAlignment="Center" />
+			</Grid>
+
+			<!-- 2. 一咖舍（todo） -->
+			<Grid Margin="0,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ui:TextBlock FontTypography="Body" Text="{helpers:Trans '2. 一咖舍'}" />
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '开发中'}" />
+				</StackPanel>
+				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,24,0">
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans 'TODO'}" Margin="0,0,8,0" />
+					<ui:ToggleSwitch IsChecked="{Binding Config.YikacheEnabled}" IsEnabled="False" />
+				</StackPanel>
+			</Grid>
+
+			<!-- 3. 环期任务（todo） -->
+			<Grid Margin="0,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<ui:TextBlock FontTypography="Body" Text="{helpers:Trans '3. 环期任务'}" />
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans '开发中'}" />
+				</StackPanel>
+				<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,24,0">
+					<ui:TextBlock FontTypography="Caption" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Text="{helpers:Trans 'TODO'}" Margin="0,0,8,0" />
+					<ui:ToggleSwitch IsChecked="False" IsEnabled="False" />
+				</StackPanel>
+			</Grid>
+
+		</StackPanel>
+	</ui:CardExpander>
 </UserControl>

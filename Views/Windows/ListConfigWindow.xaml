@@ -110,7 +110,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <!-- ★ 搜索框套一层 Grid，放大镜叠在左侧；TextBox 左 Padding 让位 30px -->
+            <!--    搜索框套一层 Grid，放大镜叠在左侧；TextBox 左 Padding 让位 30px -->
             <Grid Grid.Column="0" HorizontalAlignment="Left" Width="360">
                 <TextBox x:Name="SearchBox" Padding="30,5,8,5" FontSize="12"
                          VerticalContentAlignment="Center"

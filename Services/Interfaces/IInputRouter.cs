@@ -35,7 +35,7 @@ namespace TrustNTE.Services.Interfaces
         /// </summary>
         void MiddleClick(IntPtr hwnd, int clientX, int clientY);
 
-        // ===== 鼠标按住（重击/蓄力场景，★v1.4）=====
+        // ===== 鼠标按住（重击/蓄力场景，  v1.4）=====
         /// <summary>
         /// 按指定驱动按下鼠标键（不抬起）。1080P 逻辑坐标，内部归一化到当前视口。
         /// 驱动与坐标进入[卡键防护]台账；脚本停止/退出时由 ReleaseAllHeldKeys 兜底抬起。

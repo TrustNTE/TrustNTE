@@ -22,7 +22,7 @@
 		</ui:CardExpander.Header>
 		<StackPanel>
 			<Separator Margin="-18,0" BorderThickness="0,1,0,0" />
-			<!-- [   改位置] 移除原"配置"弹窗按钮，改为卡片内直接输入 -->
+			<!-- [   改位置] 移除原"配置"弹窗按钮，  卡片内直接输入 -->
 			<!-- [   改原因] 兑换码是纯文本列表，直接输入比弹窗少一次跳转；头部按钮列几何不变 -->
 			<controls:SettingItem Title="{helpers:Trans '兑换码列表'}" Description="{helpers:Trans '每行一个兑换码，运行时按行依次自动兑换；空行自动忽略'}">
 				<ui:TextBox Width="420" Height="110"

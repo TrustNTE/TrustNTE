@@ -13,7 +13,7 @@ namespace TrustNTE.Services
     {
         private SchedulerService? _scheduler;
 
-        /// <summary>App.OnStartup 装配时调用一次（参数已改为 SchedulerService 实例）。</summary>
+        /// <summary>App.OnStartup 装配时调用一次（参数已   SchedulerService 实例）。</summary>
         public void Bind(SchedulerService scheduler)
         {
             _scheduler = scheduler;

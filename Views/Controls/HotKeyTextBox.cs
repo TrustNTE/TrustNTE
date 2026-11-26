@@ -46,7 +46,7 @@ namespace TrustNTE.Views.Controls
         {
             e.Handled = true;
 
-            // ★ 修复：按住 Alt 时 WPF 把 e.Key 报成 Key.System，真实键在 SystemKey
+            //    修复：按住 Alt 时 WPF 把 e.Key 报成 Key.System，真实键在 SystemKey
             //   原代码直接取 e.Key，导致 Alt 单按被录成 "Alt+System" 垃圾绑定
             var key = e.Key == Key.System ? e.SystemKey : e.Key;
 
@@ -68,7 +68,7 @@ namespace TrustNTE.Views.Controls
             HotKey = new HotKey { Key = key, Modifiers = Keyboard.Modifiers };
         }
 
-        // ★ 录入期间挂起全部全局热键：RegisterHotKey 的键会被系统截走（WM_HOTKEY），
+        //    录入期间挂起全部全局热键：RegisterHotKey 的键会被系统截走（WM_HOTKEY），
         //   不挂起的话，"已被全局热键占用的键"永远到不了录入框——这正是
         //   你之前"设置 F3 没响应也没弹窗直接变空"的根因
         protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)

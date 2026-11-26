@@ -65,7 +65,7 @@ namespace TrustNTE.Services
                 var cfgNow = _configService.Load();
                 LogClickModeIfChanged(cfgNow.MouseDriveType);
 
-                // ★ 进程存活检查降频：每帧枚举全进程表太贵（5~30ms），3 秒一次足够
+                //    进程存活检查降频：每帧枚举全进程表太贵（5~30ms），3 秒一次足够
                 if ((DateTime.UtcNow - _lastProcCheckUtc).TotalSeconds >= 3)
                 {
                     _lastProcCheckUtc = DateTime.UtcNow;

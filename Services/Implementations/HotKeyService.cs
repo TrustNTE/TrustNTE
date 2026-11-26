@@ -6,7 +6,7 @@ using System.Windows.Interop;
 using TrustNTE.Models;
 using TrustNTE.Services.Interfaces;
 using Gma.System.MouseKeyHook;
-using WF = System.Windows.Forms; // ★ 别名，防止和 WPF 冲突
+using WF = System.Windows.Forms; //    别名，防止和 WPF 冲突
 
 namespace TrustNTE.Services.Implementations
 {
@@ -41,7 +41,7 @@ namespace TrustNTE.Services.Implementations
             _hwndSource.AddHook(WndProc);
         }
 
-        // ★ 新增：WinForms Keys → WPF ModifierKeys 映射
+        //    新增：WinForms Keys → WPF ModifierKeys 映射
         private static ModifierKeys ToWpfModifiers(WF.Keys keys)
         {
             var m = ModifierKeys.None;

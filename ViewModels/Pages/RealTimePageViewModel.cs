@@ -88,7 +88,7 @@ namespace TrustNTE.ViewModels.Pages
             Config = _configService.Load();
             Config.PropertyChanged += OnConfigChanged;
 
-            // ★ 清洗老用户的旧配置
+            //    清洗老用户的旧配置
             if (Config.AutoLootEngine is not ("模板" or "OCR"))
             {
                 Config.AutoLootEngine = "模板";
@@ -96,7 +96,7 @@ namespace TrustNTE.ViewModels.Pages
 
             _automationService.OnRunningStateChanged += OnAutomationRunningStateChanged;
 
-            // ★ 初始化战斗策略列表
+            //    初始化战斗策略列表
             foreach (var n in StrategyService.ListNames()) StrategyNames.Add(n);
             if (StrategyNames.Contains(Config.AutoCombatStrategyName))
                 SelectedStrategyName = Config.AutoCombatStrategyName;
@@ -112,7 +112,7 @@ namespace TrustNTE.ViewModels.Pages
                 OnPropertyChanged(nameof(IsTimeSettingVisible));
             }
 
-            // ★ 监听推理引擎切换
+            //    监听推理引擎切换
             if (e.PropertyName == nameof(AppConfig.YoloUseGpu))
             {
                 // 通知底层动态重建

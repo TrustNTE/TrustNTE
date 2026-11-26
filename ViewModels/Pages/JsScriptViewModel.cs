@@ -29,7 +29,7 @@ namespace TrustNTE.ViewModels.Pages
         [ObservableProperty] private string _editorText = "";
         [ObservableProperty] private string _consoleText = "";
         [ObservableProperty] private string _title = "未选择文件";
-        [ObservableProperty] private bool _isScriptRunning;   // ★ 运行状态：驱动停止按钮亮/灰
+        [ObservableProperty] private bool _isScriptRunning;   //    运行状态：驱动停止按钮亮/灰
 
         public JsScriptViewModel(ScriptEngineService jsEngine, ILogService log)
         {
@@ -117,7 +117,7 @@ namespace TrustNTE.ViewModels.Pages
             finally { IsScriptRunning = false; }
         }
 
-        /// <summary>★ 停止当前脚本（立即返回，脚本在后台被中断）。</summary>
+        /// <summary>   停止当前脚本（立即返回，脚本在后台被中断）。</summary>
         [RelayCommand]
         private void Stop()
         {

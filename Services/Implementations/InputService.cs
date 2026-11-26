@@ -249,7 +249,7 @@ namespace TrustNTE.Services.Interfaces.Implementations
 
         /// <summary>
         /// 左键按下（用于重击长按）。
-        /// ★v1.4.2 根治“首按灵、后续哑”：补齐全套前置，与 SendBackgroundMouseClick 完全对齐——
+        ///   v1.4.2 根治“首按灵、后续哑”：补齐全套前置，与 SendBackgroundMouseClick 完全对齐——
         ///   SetWindowPos(仅提 Z 序不抢焦点) → FakeForeground → WM_MOUSEMOVE → Sleep(20) → BUTTONDOWN。
         /// 旧实现只发一条孤零零 BUTTONDOWN：窗口不在 Z 序顶 + 引擎未收到 MOVE 时，UE5 直接忽略该消息。
         /// </summary>

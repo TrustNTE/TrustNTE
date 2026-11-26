@@ -141,7 +141,7 @@ namespace TrustNTE.ViewModels.Pages
         private async Task RunGroupAsync()
         {
             if (SelectedGroup == null || IsRunning) return;
-            if (!EngineGuard.EnsureReady()) return;   // ★ 引擎守卫
+            if (!EngineGuard.EnsureReady()) return;   //    引擎守卫
             try { await _runner.RunGroupAsync(SelectedGroup.Name, CancellationToken.None); }
             catch (Exception ex) { _log.LogError($"[调度] 执行失败: {ex.Message}"); }
         }
@@ -150,7 +150,7 @@ namespace TrustNTE.ViewModels.Pages
         private async Task RunAllAsync()
         {
             if (IsRunning || Groups.Count == 0) return;
-            if (!EngineGuard.EnsureReady()) return;   // ★ 引擎守卫
+            if (!EngineGuard.EnsureReady()) return;   //    引擎守卫
             try { await _runner.RunGroupsAsync(Groups.Select(g => g.Name), CancellationToken.None); }
             catch (Exception ex) { _log.LogError($"[调度] 连续执行失败: {ex.Message}"); }
         }

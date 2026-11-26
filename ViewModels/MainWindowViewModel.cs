@@ -59,7 +59,7 @@ namespace TrustNTE.ViewModels
         /// <param name="windowService">窗口服务，用于显示更新提示窗口。</param>
         // [模块E]    改原因：构造函数新增 UpdateService / IWindowService 依赖，
         // 将原 MainWindow.xaml.cs 里的服务定位器和更新检查逻辑迁入 ViewModel；
-        // IRedeemWindowService 参数名由 windowService 改为 redeemWindowService，避免与新 IWindowService 参数名冲突
+        // IRedeemWindowService 参数名由 windowService    redeemWindowService，避免与新 IWindowService 参数名冲突
         public MainWindowViewModel(
             IRedeemCodeService redeemService,
             IConfigService configService,

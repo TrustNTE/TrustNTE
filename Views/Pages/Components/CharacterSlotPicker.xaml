@@ -32,7 +32,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- ★ 修复：增加 HorizontalAlignment 和 HorizontalContentAlignment 保证填满 1/4 列宽 -->
+        <!--    修复：增加 HorizontalAlignment 和 HorizontalContentAlignment 保证填满 1/4 列宽 -->
         <ToggleButton x:Name="SlotToggle" Click="SlotToggle_Click" Height="30" Cursor="Hand"
                       HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
             <ToggleButton.Template>

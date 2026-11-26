@@ -57,7 +57,7 @@ namespace TrustNTE.Services.Fishing
             return (barA, barB);
         }
 
-        // ★ 新增：粉色颜色检测方法
+        //    新增：粉色颜色检测方法
         public bool CheckPinkBubble(Mat frame, Rect searchRect)
         {
             var actualRect = searchRect.Intersect(new Rect(0, 0, frame.Width, frame.Height));
@@ -122,7 +122,7 @@ namespace TrustNTE.Services.Fishing
             bool interactCooldown = (DateTime.Now - _lastInteractPressTime).TotalMilliseconds < FishingSceneMap.InteractCooldownMs;
             if (!hitFish && !hitCastRod && !hitStart && !interactCooldown)
             {
-                // ★ 双管齐下：多尺度灰度匹配 + 颜色检测兜底
+                //    双管齐下：多尺度灰度匹配 + 颜色检测兜底
                 hitInteract = _templateService.MatchAnyMultiScale(frame, FishingSceneMap.InteractRect, FishingSceneMap.TplFishingInteract) != null
                               || CheckPinkBubble(frame, FishingSceneMap.InteractRect);
             }

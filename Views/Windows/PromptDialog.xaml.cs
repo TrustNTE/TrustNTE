@@ -15,7 +15,7 @@ namespace TrustNTE.Views.Windows
         /// <param name="viewModel">对话框的 ViewModel。</param>
         public PromptDialog(PromptDialogViewModel viewModel)
         {
-            // [模块A]    改原因：构造函数改为接收 ViewModel，DataContext 由外部注入
+            // [模块A]    改原因：构造函数  接收 ViewModel，DataContext 由外部注入
             InitializeComponent();
             DataContext = viewModel;
             viewModel.CloseRequested += OnCloseRequested;

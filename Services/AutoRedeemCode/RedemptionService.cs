@@ -39,7 +39,7 @@ namespace TrustNTE.Services.AutoRedeemCode
     public sealed class RedemptionService : IRedemptionService, IDisposable
     {
         // ============ 图集组键常量 ============
-        // [对齐点★Template] 组键 = 模板名去 "Nte_" 前缀、去尾部序号。
+        // [对齐点  Template] 组键 = 模板名去 "Nte_" 前缀、去尾部序号。
         // 本轮新增组（图集 Ntes_OneClickRdmCode.json 已含）：
         //   Nte_RedemptionCodeUsed    → "RedemptionCodeUsed"（无序号，去前缀即可）
         //   Nte_InvalidRedemptionCode → "InvalidRedemptionCode"（同上）
@@ -53,7 +53,7 @@ namespace TrustNTE.Services.AutoRedeemCode
         private const string GrpInvalidCode = "InvalidRedemptionCode";          // 兑奖码无效/已失效（本轮新增）
 
         // ============ 按键对齐区 ============
-        // [对齐点★Key] 统一走项目封装 Helpers\KeyCode（a就是a），全量键码表维护在 KeyCode.cs。
+        // [对齐点  Key] 统一走项目封装 Helpers\KeyCode（a就是a），全量键码表维护在 KeyCode.cs。
         // 本流程只用 2 个键：Esc（导航+关成功弹窗）+ Backspace（清空输入框）。
         private const int KeyEsc = KeyCode.Esc;
         private const int KeyBackspace = KeyCode.Backspace;
@@ -90,7 +90,7 @@ namespace TrustNTE.Services.AutoRedeemCode
             _configService = configService;
         }
 
-        /// <summary>锚点检测结果（async 方法不得带 out，改为结果对象）</summary>
+        /// <summary>锚点检测结果（async 方法不得带 out，  结果对象）</summary>
         private sealed class MatchResult
         {
             public bool Found;
@@ -104,7 +104,7 @@ namespace TrustNTE.Services.AutoRedeemCode
         public async Task<RedemptionRunResult> RunAsync(IReadOnlyList<string> codes, IProgress<string> progress, CancellationToken ct)
         {
             var result = new RedemptionRunResult { Total = codes.Count };
-            var cfg = _configService.Load().AutoRedeem;   // [对齐点★AppConfig] 属性名如不同只改此处
+            var cfg = _configService.Load().AutoRedeem;   // [对齐点  AppConfig] 属性名如不同只改此处
 
             // 全局单飞：非阻塞抢锁，失败直接退出（任务页与窗口按钮共用同一实例）
             if (!await _runLock.WaitAsync(0, ct))

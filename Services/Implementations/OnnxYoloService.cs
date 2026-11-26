@@ -28,7 +28,7 @@ namespace TrustNTE.Services.Implementations
         private int _inputH = 640, _inputW = 640;
         private bool _currentUseGpu;
 
-        // ★ 用于接收线程安全的引擎切换请求
+        //    用于接收线程安全的引擎切换请求
         private int _pendingEngine = -1; // -1=无请求；0=CPU；1=GPU
 
         public OnnxYoloService(string modelPath, bool useGpu, Action<string>? log = null)

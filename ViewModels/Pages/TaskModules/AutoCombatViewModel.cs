@@ -13,7 +13,7 @@ namespace TrustNTE.ViewModels.Pages.TaskModules
     public partial class AutoCombatViewModel : TaskModuleViewModelBase
     {
         private readonly IGameService _gameService;
-        private readonly IInputRouter _router;          // ★ 新增：统一输入路由
+        private readonly IInputRouter _router;          //    新增：统一输入路由
         private readonly AutomationService _automationService;
         private readonly IDialogService _dialogService;
         private CancellationTokenSource? _taskCts;
@@ -25,7 +25,7 @@ namespace TrustNTE.ViewModels.Pages.TaskModules
             IConfigService configService,
             ILogService logService,
             IGameService gameService,
-            IInputRouter router,                        // ★ 新增
+            IInputRouter router,                        //    新增
             AutomationService automationService,
             IDialogService dialogService)
             : base(logService, configService, "自动战斗")

@@ -296,9 +296,9 @@ namespace TrustNTE.Services.Gacha.Maps
             if (_items.TryGetValue(canonical, out var item)) return item.Name;
             // [弧盘兜底] core.json 未收录的新弧盘 → DT_ForkItemData 中文名
             EnsureForkTableLoaded();
-            if (_forkNameByItemId.TryGetValue(itemId, out var n)) return n;          // ★ 改动①：三元式拆为 if
+            if (_forkNameByItemId.TryGetValue(itemId, out var n)) return n;          //    改动①：三元式拆为 if
             if (_forkNameByItemId.TryGetValue(canonical, out n)) return n;
-            // ★ LogMiss：三级全 miss → 登记 map_misses.log（人工补录待办清单）
+            //    LogMiss：三级全 miss → 登记 map_misses.log（人工补录待办清单）
             LogMiss("ITEM", itemId, "纯数字→core.json items+locales；fork_→DT_ForkItemData Rows");
             return itemId;
         }
@@ -321,7 +321,7 @@ namespace TrustNTE.Services.Gacha.Maps
         {
             EnsureLoaded();
             if (!_available) return null;
-            // ★ 改动②：fork 池判定抽成局部量（行为与原短路条件完全一致）
+            //    改动②：fork 池判定抽成局部量（行为与原短路条件完全一致）
             var isForkPool = !string.IsNullOrEmpty(poolId)
                           && poolId.StartsWith("ForkLottery_", StringComparison.Ordinal);
             if (isForkPool
@@ -331,14 +331,14 @@ namespace TrustNTE.Services.Gacha.Maps
 
             if (string.IsNullOrEmpty(lotteryId))
             {
-                // ★ LogMiss：弧盘池横幅未收录（lotteryId 为空，只能以 poolId 登记）
+                //    LogMiss：弧盘池横幅未收录（lotteryId 为空，只能以 poolId 登记）
                 if (isForkPool)
                     LogMiss("BANNER", poolId, "core.json banner_sources(ForkLottery_*) + locales 横幅名");
                 return null;
             }
             if (!_banners.TryGetValue(lotteryId, out var banner))
             {
-                // ★ LogMiss：横幅未收录
+                //    LogMiss：横幅未收录
                 LogMiss("BANNER", lotteryId, "core.json banner_sources + locales 横幅名");
                 return null;
             }
@@ -350,7 +350,7 @@ namespace TrustNTE.Services.Gacha.Maps
         {
             EnsureLoaded();
             if (!_available || string.IsNullOrEmpty(poolId)) return poolId ?? "";
-            if (_pools.TryGetValue(poolId, out var pool))                            // ★ 改动③：三元式拆为 if
+            if (_pools.TryGetValue(poolId, out var pool))                            //    改动③：三元式拆为 if
                 return NonEmpty(pool.Title) ?? pool.Name;
             LogMiss("POOL", poolId, "core.json pools + locales 池名");
             return poolId;
@@ -423,7 +423,7 @@ namespace TrustNTE.Services.Gacha.Maps
                 var hit3 = FindFlat(forkIcon);
                 if (hit3 is not null) return hit3;
             }
-            // ★ 改动④：三级头像链全 miss → 登记 map_misses.log（PNG 按 core.json/DT 表引用尾段名补）
+            //    改动④：三级头像链全 miss → 登记 map_misses.log（PNG 按 core.json/DT 表引用尾段名补）
             LogMiss("ICON", itemId, "PNG 按引用尾段名改名，放 Assets\\Fork\\");
             return null;
         }
@@ -545,7 +545,7 @@ namespace TrustNTE.Services.Gacha.Maps
             return null;
         }
 
-        // ★★★ 改动⑤：未收录 ID 登记器（LogMiss）——查表 miss 时写一行 exe 旁 map_misses.log ★★★
+        //        改动⑤：未收录 ID 登记器（LogMiss）——查表 miss 时写一行 exe 旁 map_misses.log       
         // 用途：人工补录待办清单。同一 kind|id 每次启动只记一行；文件可随时删除，下次 miss 自动重建。
         private static readonly object _missLock = new();
         private static readonly HashSet<string> _missLogged = new();

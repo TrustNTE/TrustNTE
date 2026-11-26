@@ -1,6 +1,6 @@
 ﻿using OpenCvSharp;
 using System;
-using System.Linq;              // ★ 空队伍守卫需要
+using System.Linq;              //    空队伍守卫需要
 using TrustNTE.Helpers;
 using TrustNTE.Models;
 using TrustNTE.Services.Combat;
@@ -70,7 +70,7 @@ namespace TrustNTE.Services.Triggers
                 return false;
             }
 
-            // ★ Team 默认含 4 个 null 槽，Count==0 永远为假 → 必须按内容判空
+            //    Team 默认含 4 个 null 槽，Count==0 永远为假 → 必须按内容判空
             if (doc == null || doc.Team.All(t => string.IsNullOrWhiteSpace(t)))
             {
                 _log.LogWarning($"[战斗] 策略「{name}」加载失败/无队伍，回退默认反应策略");
@@ -82,7 +82,7 @@ namespace TrustNTE.Services.Triggers
             return true;
         }
 
-        /// <summary>★ 新增：切回默认反应策略（策略被删/加载失败/策略名清空时调用）。</summary>
+        /// <summary>   新增：切回默认反应策略（策略被删/加载失败/策略名清空时调用）。</summary>
         public void ResetToDefault() => SetStrategy(new DefaultReactiveStrategy(_log));
 
         /// <summary>实际驱动：后台战斗配置开启 → 强制后台；否则跟随全局。</summary>

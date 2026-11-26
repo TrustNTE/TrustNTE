@@ -39,7 +39,7 @@
                         PlaceholderText="{helpers:Trans '每行一条记录...'}"/>
         </Grid>
 
-        <!-- [模块A] Click 事件改为 Command 绑定，业务逻辑已迁入 PromptDialogViewModel -->
+        <!-- [模块A] Click 事件   Command 绑定，业务逻辑已迁入 PromptDialogViewModel -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="24,0,24,24">
             <ui:Button Content="{helpers:Trans '取消'}" Appearance="Secondary" Width="80" Margin="0,0,12,0" Command="{Binding CancelCommand}"/>
             <ui:Button Content="{helpers:Trans '确定'}"  Width="80" Command="{Binding ConfirmCommand}"/>

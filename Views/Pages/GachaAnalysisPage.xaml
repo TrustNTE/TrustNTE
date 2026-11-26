@@ -478,7 +478,7 @@
                                     <DataGridTemplateColumn Header="{helpers:Trans '星级'}" Width="60">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Rarity, StringFormat={}{0}★}" FontWeight="Bold" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding Rarity, StringFormat={}{0}  }" FontWeight="Bold" HorizontalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock">
                                                             <Setter Property="Foreground" Value="{StaticResource GcCyan}"/>

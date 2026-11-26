@@ -2,7 +2,7 @@ using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq; // 用于报表拼接
+using System.Linq;
 using System.Threading;
 using TrustNTE.Services.Interfaces;
 
@@ -11,9 +11,9 @@ namespace TrustNTE.Services.Triggers
     public class TriggerManager
     {
         private readonly List<ITaskTrigger> _triggers = new();
+
         public Func<bool>? ExtraBusyCheck { get; set; }
 
-        // 耗时记录字段
         private readonly Dictionary<string, double> _timingMs = new();
         private readonly object _timingLock = new();
 
@@ -23,6 +23,7 @@ namespace TrustNTE.Services.Triggers
         public AutoDialogueTrigger? DialogueTrigger { get; private set; }
         public AutoCombatTrigger? AutoCombatTrigger { get; private set; }
         public MonthlyCardTrigger? MonthlyCardTrigger { get; private set; }
+        public DailyActiveTrigger? DailyActiveTrigger { get; private set; }
 
         public void InitializeAll(TriggerContext ctx)
         {
@@ -31,30 +32,29 @@ namespace TrustNTE.Services.Triggers
             lock (_timingLock) { _timingMs.Clear(); }
 
             LoadingTrigger = new GameLoadingTrigger(
-                ctx.Automation, ctx.Log, ctx.Config, ctx.Input, ctx.NteInteraction,
-                ctx.Automation.Supervisor, ctx.Automation.GameStateTemplates, ctx.Hwnd)
-            {
-                CoordMapper = ctx.LegacyCoordMapper
-            };
+                ctx.Automation, ctx.Log, ctx.Config, ctx.Input,
+                ctx.NteInteraction, ctx.Automation.Supervisor,
+                ctx.Automation.GameStateTemplates, ctx.Hwnd)
+            { CoordMapper = ctx.LegacyCoordMapper };
 
             CombatTrigger = new CombatTrigger(ctx.Log);
 
             LootTrigger = new AutoLootTrigger(
                 ctx.Config, ctx.Router, ctx.Log, ctx.Hwnd,
                 ctx.WordFTemplates, ctx.OcrRecognize)
-            {
-                CoordMapper = ctx.LegacyCoordMapper
-            };
+            { CoordMapper = ctx.LegacyCoordMapper };
 
             DialogueTrigger = new AutoDialogueTrigger(
                 ctx.Config, ctx.Router, ctx.Log, ctx.StoryTemplates, ctx.Hwnd);
 
             AutoCombatTrigger = new AutoCombatTrigger(
-
                 ctx.Config, ctx.Log, ctx.Router, ctx.Hwnd, ctx.YoloProvider!);
 
             MonthlyCardTrigger = new MonthlyCardTrigger(
                 ctx.Config, ctx.Router, ctx.Log, ctx.Hwnd);
+
+            DailyActiveTrigger = new DailyActiveTrigger(
+                ctx.Config, ctx.Router, ctx.Log, ctx.Hwnd, ctx.OcrRecognize);
 
             _triggers.Add(LoadingTrigger);
             _triggers.Add(CombatTrigger);
@@ -62,6 +62,7 @@ namespace TrustNTE.Services.Triggers
             _triggers.Add(DialogueTrigger);
             _triggers.Add(AutoCombatTrigger);
             _triggers.Add(MonthlyCardTrigger);
+            _triggers.Add(DailyActiveTrigger);
         }
 
         public void EnableCombatTriggers(ILogService logService)
@@ -71,15 +72,14 @@ namespace TrustNTE.Services.Triggers
             if (DialogueTrigger != null) DialogueTrigger.IsEnabled = true;
             if (AutoCombatTrigger != null) AutoCombatTrigger.IsEnabled = true;
             if (MonthlyCardTrigger != null) MonthlyCardTrigger.IsEnabled = true;
+            if (DailyActiveTrigger != null) DailyActiveTrigger.IsEnabled = true;
             logService.Log("即将跳转实时触发任务");
         }
 
         public void Dispatch(Mat resizedMat, double scale, CancellationToken token = default)
         {
             if (token.IsCancellationRequested) return;
-
-            bool sequenceRunning = TaskRuntimeRegistry.Count > 0
-                || (ExtraBusyCheck?.Invoke() ?? false);
+            bool sequenceRunning = TaskRuntimeRegistry.Count > 0 || (ExtraBusyCheck?.Invoke() ?? false);
 
             foreach (var trigger in _triggers)
             {
@@ -87,14 +87,19 @@ namespace TrustNTE.Services.Triggers
 
                 if (trigger.IsEnabled)
                 {
-                    if (sequenceRunning && trigger.Class == TriggerClass.Reactive)
-                        continue;
+                    if (sequenceRunning && trigger.Class == TriggerClass.Reactive) continue;
 
-                    // 掐表计时
+                    // 活跃度领取流程进行中，剧情触发器让路，防止误按ESC关掉领取面板
+                    if (trigger is AutoDialogueTrigger
+                        && DailyActiveTrigger != null
+                        && DailyActiveTrigger.IsFlowActive)
+                    {
+                        continue;
+                    }
+
                     var sw = Stopwatch.StartNew();
                     trigger.OnCapture(resizedMat, scale);
                     sw.Stop();
-
                     lock (_timingLock)
                     {
                         _timingMs.TryGetValue(trigger.Name, out var t);
@@ -104,7 +109,6 @@ namespace TrustNTE.Services.Triggers
             }
         }
 
-        // 输出报表并清零
         public string FlushTimingReport()
         {
             lock (_timingLock)
@@ -130,12 +134,14 @@ namespace TrustNTE.Services.Triggers
         {
             ReleaseAllTriggers();
             _triggers.Clear();
+
             LoadingTrigger = null;
             CombatTrigger = null;
             LootTrigger = null;
             DialogueTrigger = null;
             AutoCombatTrigger = null;
             MonthlyCardTrigger = null;
+            DailyActiveTrigger = null;
         }
 
         private void ReleaseAllTriggers()
@@ -144,8 +150,7 @@ namespace TrustNTE.Services.Triggers
             {
                 if (trigger is IDisposable disposable)
                 {
-                    try { disposable.Dispose(); }
-                    catch { }
+                    try { disposable.Dispose(); } catch { }
                 }
             }
         }

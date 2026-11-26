@@ -44,7 +44,7 @@ namespace TrustNTE.Services.Implementations
         private readonly object _inputLock = new object();
         private bool _isOperating = false;
 
-        // ★v1.4 长按场景的光标还原：Down 时记录，Up 时还原（对齐 NteClick 的 shouldRestore 语义）
+        //   v1.4 长按场景的光标还原：Down 时记录，Up 时还原（对齐 NteClick 的 shouldRestore 语义）
         private POINT _holdRestorePoint;
         private bool _holdCursorMoved;
 

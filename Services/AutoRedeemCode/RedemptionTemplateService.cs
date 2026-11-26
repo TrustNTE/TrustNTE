@@ -94,7 +94,7 @@ namespace TrustNTE.Services.AutoRedeemCode
         /// <summary>
         /// 在给定场景（通常为已裁剪的 ROI 区域）内对指定组的所有变体做 MatchTemplate，
         /// 取最高分且 ≥ 阈值的命中。center 为场景内局部坐标。
-        /// [   复][CS8825] matchedKey 改为可空注解
+        /// [   复][CS8825] matchedKey   可空注解
         /// </summary>
         public bool TryMatchAny(Mat scene, string groupKey, out Point center, out string? matchedKey, double? threshold = null)
         {

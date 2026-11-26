@@ -149,7 +149,7 @@ namespace TrustNTE.Services.Triggers
         private readonly AutoStoryTemplateService _storyTemplates;
         private readonly IntPtr _hwnd;
 
-        // 冷却改为“截止时刻”（TickCount64 毫秒）：过期后单字段自然失效，无需清旧时长。
+        // 冷却  “截止时刻”（TickCount64 毫秒）：过期后单字段自然失效，无需清旧时长。
         // 用 Environment.TickCount64 避免 DateTime.Now 受 NTP 校时跳变影响（500~1000ms 短间隔更稳）。
         private long _nextActionAllowedTick = 0;
 
@@ -256,7 +256,7 @@ namespace TrustNTE.Services.Triggers
 
                 ExecuteRule(rule, hitRect.Value, config);
 
-                // 环期赠礼：改为“等模板消失”，取代原来的固定 1 秒冷却。
+                // 环期赠礼：  “等模板消失”，取代原来的固定 1 秒冷却。
                 // 模板还在就绝不重复点（无论切换实际花多久）；切走立即恢复；3 秒兜底防点击没生效卡死。
                 if (rule.TemplateGroup == "Nte_CycleGift")
                 {

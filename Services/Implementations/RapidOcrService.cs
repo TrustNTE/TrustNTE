@@ -14,14 +14,14 @@ namespace TrustNTE.Services.Implementations
 {
     /// <summary>
     /// PP-OCR rec-only 识别服务（Python RapidOCR 方案的 C# 原生重建，引擎为 OnnxRuntime）。
-    /// ★v1.4.3 由 RapidOcrService 更名而来——旧名是历史包袱：本类从未依赖 RapidOCR 包，
+    ///   v1.4.3 由 RapidOcrService 更名而来——旧名是历史包袱：本类从未依赖 RapidOCR 包，
     /// 只复刻其算法（rec-only + CTC 解码），真正的推理引擎一直是 Microsoft.ML.OnnxRuntime。
     ///
     /// 核心：固定 ROI（UID 区）文字位置已知 → 跳过 det 模型，只跑 rec：
     ///   裁剪图 → 边缘补边 → 缩放到高 48 → 归一化 [-1,1] → rec.onnx → CTC 解码 → 文本
     ///
     /// 设备策略：固定 CPU（rec-only 处理小图 ROI，CPU 延迟已达标；DirectML 曾实验后撤下，
-    /// 如需 GPU 另开专项验证，不在此处顺手改）。★v1.4.3 删除"CPU 失败回退 CPU"假回退死代码。
+    /// 如需 GPU 另开专项验证，不在此处顺手改）。  v1.4.3 删除"CPU 失败回退 CPU"假回退死代码。
     /// 线程安全：InferenceSession.Run 官方保证可并发，无需加锁。
     /// 字典自校验：输出类别数 = 字典行数 + blank(+空格) 对不上就拒绝启动并报出数字。
     /// </summary>
@@ -61,7 +61,7 @@ namespace TrustNTE.Services.Implementations
                         return;
                     }
 
-                    // 1) EP：固定 CPU。★v1.4.3 去僵尸：旧代码 try 里建 CPU 会话、catch 里再建一个
+                    // 1) EP：固定 CPU。  v1.4.3 去僵尸：旧代码 try 里建 CPU 会话、catch 里再建一个
                     //    一模一样的 CPU 会话，两臂同效纯属死代码；如需 DirectML 见类头注释
                     var so = NewSessionOptions();
                     so.AppendExecutionProvider_CPU();

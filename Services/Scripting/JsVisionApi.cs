@@ -43,11 +43,11 @@ namespace TrustNTE.Services.Scripting
             NteRenderContextManager render, IOcrService ocr)
         {
             _game = game; _auto = auto; _render = render; _ocr = ocr;
-            _tplDir = LocateTemplateDir();   // ★v1.3.1 改：锚定算法替代 BaseDirectory 硬拼
+            _tplDir = LocateTemplateDir();   //   v1.3.1 改：锚定算法替代 BaseDirectory 硬拼
             Directory.CreateDirectory(_tplDir);   // 已存在则为 no-op，保留兜底保证
         }
 
-        // ★v1.3.1 新增：模板目录锚定——自动向上找 UserData\Templates，不再瞎猜 bin 树
+        //   v1.3.1 新增：模板目录锚定——自动向上找 UserData\Templates，不再瞎猜 bin 树
         private static string LocateTemplateDir()
         {
             var candidates = new List<string>();

@@ -29,7 +29,7 @@ namespace TrustNTE.Helpers
             }
         }
 
-        //    复 Nullability 警告：将 sender 改为 object?
+        //    复 Nullability 警告：将 sender    object?
         private static void Image_TargetUpdated(object? sender, DataTransferEventArgs e)
         {
             if (sender is System.Windows.Controls.Image image)

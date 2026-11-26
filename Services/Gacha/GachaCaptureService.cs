@@ -19,7 +19,7 @@ namespace TrustNTE.Services.Gacha
     /// <summary>
     /// 抓包引擎 Npcap(SharpPcap) 后端实现（nte-capture 规格 + 两层重组增强 v4）。
     /// [v4修复] ScanFlow 改走完整 ScanMarker(raw+shift8 全视图)——shift 视图块跨 TCP 段后重组可参与解析;
-    /// [v4修复] OnPacketArrival 空 catch 改为计数+首条记录+总账输出。
+    /// [v4修复] OnPacketArrival 空 catch   计数+首条记录+总账输出。
     /// </summary>
     public sealed class GachaCaptureService : IGachaCaptureService
     {

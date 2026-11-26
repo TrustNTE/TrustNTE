@@ -30,7 +30,7 @@ namespace TrustNTE.Services.Triggers
         private static readonly Rect TextRoi = new(1179, 568, 400, 41);
         private static readonly string[] SafeExclusions = { "聊天", "设置", "前往", "传送" };
 
-        // ★ 大牛工具：内容变化检测
+        //    大牛工具：内容变化检测
         private readonly ChangeDetector<string> _textChange = new();
 
         public AutoLootTrigger(IConfigService configService, IInputRouter router, ILogService log,
@@ -80,7 +80,7 @@ namespace TrustNTE.Services.Triggers
             long costMs = Environment.TickCount64 - t0;
             string text = (raw ?? "").Replace(" ", "").Trim();
 
-            // ★ 大牛方案：判断内容是否发生变化
+            //    大牛方案：判断内容是否发生变化
             bool changed = _textChange.IsChanged(text);
 
             // 诊断日志：只有文本变化时才记录，且降级为 Debug（玩家默认看不到）
@@ -104,7 +104,7 @@ namespace TrustNTE.Services.Triggers
             Press(cfg, $"OCR命中「{text}」");
         }
 
-        // ★ 修复：判定权收归 PickupListEvaluator（模式裁决制）。
+        //    修复：判定权收归 PickupListEvaluator（模式裁决制）。
         // 旧实现白名单模式里有一行黑名单一票否决 —— 同名词跨名单时白名单模式永远不拾取，
         // 即"切哪个模式都不交互"的根因。现行为：
         //   - 白名单模式只查白名单，黑名单模式只查黑名单（互不偷看）

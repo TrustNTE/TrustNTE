@@ -150,9 +150,15 @@ namespace TrustNTE.Models
         [ObservableProperty] private string _monthlyCardEndTime = "04:10";    // 指定时间段的结束时间
         [ObservableProperty] private bool _monthlyCardUseLocalTime = true;    // true=读取本地时间，false=强制读取北京时间
         public string LastMonthlyCardClaimDate { get; set; } = string.Empty;  // 记录上次领取的日期，用于跨天防重
+        public string LastDailyActiveClaimDate { get; set; } = string.Empty;  // 每日活跃度上次领取的游戏日（跨5点防重）
+        public Dictionary<string, string> LastClaimByUid { get; set; } = new(); // 每个UID(账号)独立记录最后领完的游戏日
+
+        public int DailyResetHour { get; set; } = 5;   // 每日奖励重置时刻（0-23），默认5点
+
+
 
         // ==========================================
-        // 游戏守护（Supervisor）配置
+        // 游戏守护配置
         // ==========================================
         [ObservableProperty] private bool _autoUpdateGame = true;             // 启动器检测到更新时，是否自动更新游戏
         [ObservableProperty] private bool _autoReconnectEnabled = true;       // 掉线时，是否自动点击重连

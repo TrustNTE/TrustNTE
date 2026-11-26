@@ -101,7 +101,7 @@ namespace TrustNTE.Views.Windows
         }
 
         /// <summary>
-        /// ★ 把 HTML 里相对路径的 img src 替换为 base64 data URI。
+        ///    把 HTML 里相对路径的 img src 替换为 base64 data URI。
         /// 基准目录 = 输出目录\Assets\Docs（与 ShowDoc 读 md 的根一致）。
         /// 图片缺失时保留原样（裂图可见，方便排查），内联失败不阻塞文档渲染。
         /// </summary>

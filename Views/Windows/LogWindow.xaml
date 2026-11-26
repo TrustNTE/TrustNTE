@@ -3,12 +3,14 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:controls="clr-namespace:TrustNTE.Views.Controls"
-             xmlns:helpers="clr-namespace:TrustNTE.Helpers"
+                 xmlns:helpers="clr-namespace:TrustNTE.Helpers"
                  Title="{helpers:Trans 'TrustNTE - 运行日志'}"
                  Height="500" Width="800"
                  WindowStartupLocation="CenterScreen"
-                 WindowBackdropType="Mica" ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 ExtendsContentIntoTitleBar="True"
                  Background="#1A1A1A">
+
     <Window.Resources>
         <!-- 级别过滤 chip（小药丸样式） -->
         <Style x:Key="ChipStyle" TargetType="ToggleButton">
@@ -22,10 +24,12 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10" Padding="{TemplateBinding Padding}">
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -55,10 +59,12 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
-                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="4" Padding="{TemplateBinding Padding}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}"
                                 SnapsToDevicePixels="True">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -88,7 +94,9 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="{helpers:Trans 'TrustNTE - 运行日志'}" Background="Transparent">
+        <ui:TitleBar Grid.Row="0"
+                     Title="{helpers:Trans 'TrustNTE - 运行日志'}"
+                     Background="Transparent">
             <ui:TitleBar.Icon>
                 <ui:ImageIcon Source="/Assets/titlelogo.ico" />
             </ui:TitleBar.Icon>
@@ -97,29 +105,30 @@
         <Grid Grid.Row="1" Margin="16,0,16,10">
             <!-- 左：级别过滤 chips -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <RadioButton x:Name="ChipAll"   Content="{helpers:Trans '全部'}"  GroupName="LogLvl" Tag="Debug" IsChecked="True"
-                             Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
-                <RadioButton x:Name="ChipInfo"  Content="INFO"  GroupName="LogLvl" Tag="Info"
-                             Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
-                <RadioButton x:Name="ChipWarn"  Content="WARN"  GroupName="LogLvl" Tag="Warn"
-                             Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
-                <RadioButton x:Name="ChipError" Content="ERROR" GroupName="LogLvl" Tag="Error"
-                             Style="{StaticResource ChipStyle}" Checked="Chip_Checked"/>
+                <RadioButton x:Name="ChipAll"   Content="{helpers:Trans '全部'}"  GroupName="LogLvl" Tag="Debug"     IsChecked="True" Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
+                <RadioButton x:Name="ChipInfo"  Content="INFO"    GroupName="LogLvl" Tag="Info"      Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
+                <RadioButton x:Name="ChipWarn"  Content="WARN"    GroupName="LogLvl" Tag="Warn"      Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
+                <RadioButton x:Name="ChipError" Content="ERROR"   GroupName="LogLvl" Tag="Error"     Style="{StaticResource ChipStyle}" Margin="0,0,6,0" Checked="Chip_Checked"/>
+                <!-- ★ 新增：DEBUG专用chip（Tag=DebugOnly → 只看DEBUG级条目） -->
+                <RadioButton x:Name="ChipDebug" Content="DEBUG"   GroupName="LogLvl" Tag="DebugOnly" Style="{StaticResource ChipStyle}" Checked="Chip_Checked"/>
             </StackPanel>
 
             <!-- 右：开发者模式（虫子图标） + 复制 + 清空 -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <ToggleButton x:Name="DevToggle" Style="{StaticResource DevToggleStyle}"
-                              Margin="0,0,10,0" VerticalAlignment="Center"
-                              Checked="DevToggle_Changed" Unchecked="DevToggle_Changed">
+                <ToggleButton x:Name="DevToggle"
+                              Style="{StaticResource DevToggleStyle}"
+                              Margin="0,0,10,0"
+                              VerticalAlignment="Center"
+                              Checked="DevToggle_Changed"
+                              Unchecked="DevToggle_Changed">
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon Symbol="Bug24" FontSize="16" Margin="0,0,7,0"
                                        Foreground="{Binding RelativeSource={RelativeSource AncestorType=ToggleButton}, Path=Foreground}"/>
                         <TextBlock Text="{helpers:Trans '开发者模式'}" VerticalAlignment="Center" FontSize="13"/>
                     </StackPanel>
                 </ToggleButton>
-                <ui:Button Content="{Binding CopyButtonText}" Click="CopyButton_Click"
-                           Icon="{ui:SymbolIcon Copy24}" Margin="0,0,10,0"/>
+
+                <ui:Button Content="{Binding CopyButtonText}" Click="CopyButton_Click" Icon="{ui:SymbolIcon Copy24}" Margin="0,0,10,0"/>
                 <ui:Button Content="{helpers:Trans '清空界面'}" Click="ClearButton_Click" Icon="{ui:SymbolIcon Delete24}" />
             </StackPanel>
         </Grid>

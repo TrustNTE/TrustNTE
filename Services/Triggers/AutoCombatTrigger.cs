@@ -1,5 +1,5 @@
 using System;
-using System.IO;                // ★ 热载读策略文件时间戳
+using System.IO;                //    热载读策略文件时间戳
 using System.Linq;
 using OpenCvSharp;
 using TrustNTE.Helpers;
@@ -24,13 +24,13 @@ namespace TrustNTE.Services.Triggers
         private readonly CombatStrategyEngine _engine;
         private readonly IAutomationContext _autoCtx;
 
-        // ★ 热载：记住上次生效的策略名 + 策略文件写入时间
+        //    热载：记住上次生效的策略名 + 策略文件写入时间
         private string? _lastStrategyName;
         private DateTime _lastStrategyFileUtc;
 
         public AutoCombatTrigger(IConfigService configService, ILogService logService,
                          IInputRouter router, IntPtr hwnd, YoloModelProvider yoloProvider,
-                         IAutomationContext? autoCtx = null)   // ★ 改为可选
+                         IAutomationContext? autoCtx = null)   //      可选
         {
             _configService = configService;
             _logService = logService;
@@ -40,7 +40,7 @@ namespace TrustNTE.Services.Triggers
             _bossLv = new BossLvDetector(logService);
             _engine = new CombatStrategyEngine(router, hwnd, _qEnergy, logService);
 
-            // ★ TriggerManager 的 ctx 没有自动化上下文可传 → 从 App 静态容器取同一个单例
+            //    TriggerManager 的 ctx 没有自动化上下文可传 → 从 App 静态容器取同一个单例
             //   （AutomationService 在 DI 同时注册为 IAutomationContext，且触发器创建晚于装配，必非空）
             _autoCtx = autoCtx
                 ?? (IAutomationContext)App.ServiceProvider.GetService(typeof(IAutomationContext))!;
@@ -73,7 +73,7 @@ namespace TrustNTE.Services.Triggers
 
             try
             {
-                HotSwapStrategyIfNeeded(config);   // ★ 策略热载（改名或重新保存即生效，无需重启）
+                HotSwapStrategyIfNeeded(config);   //    策略热载（改名或重新保存即生效，无需重启）
                 if (config.AutoCombatUseUltimate) _qEnergy.Analyze(resizedMat);
                 _bossLv.Analyze(resizedMat);
                 var target = ScanTarget(resizedMat, config);
@@ -86,7 +86,7 @@ namespace TrustNTE.Services.Triggers
             ReportDiag();
         }
 
-        /// <summary>★ 策略热载：名字变化 或 策略文件被重新保存 → 重建策略。10Hz 轮询，开销可忽略。</summary>
+        /// <summary>   策略热载：名字变化 或 策略文件被重新保存 → 重建策略。10Hz 轮询，开销可忽略。</summary>
         private void HotSwapStrategyIfNeeded(AppConfig config)
         {
             var name = config.AutoCombatStrategyName;
